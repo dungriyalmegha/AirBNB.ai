@@ -2,6 +2,7 @@ import { CalendarDays, MapPin, Search, Users } from 'lucide-react'
 import { useMemo, useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { usePublishedProperties } from '../context/DataContext'
+import { stayNear } from '../data/gurgaon'
 import { addDays, today } from '../utils/dates'
 import { classNames } from '../utils/format'
 import { Button } from './ui/Button'
@@ -54,11 +55,14 @@ export function SearchBar({ initial, variant = 'hero', onSearch }: { initial?: P
     >
       <div className="grid grid-cols-2 gap-y-1 md:grid-cols-[1.4fr_1fr_1fr_0.8fr_auto] md:items-center md:divide-x md:divide-line">
         <label className={classNames(cell, 'col-span-2 md:col-span-1')}>
-          <span className={label}><MapPin className="h-3.5 w-3.5" /> Where</span>
+          <span className={label}><MapPin className="h-3.5 w-3.5" /> Where in Gurgaon</span>
           <select value={v.where} onChange={(e) => setV({ ...v, where: e.target.value })} className={classNames(input, 'cursor-pointer appearance-none')}>
-            <option value="">All destinations</option>
-            <optgroup label="Destinations">
+            <option value="">All of Gurgaon</option>
+            <optgroup label="Areas of Gurgaon">
               {options.regions.map((r) => <option key={r} value={r}>{r}</option>)}
+            </optgroup>
+            <optgroup label="Near a landmark">
+              {stayNear.filter((l) => !options.regions.includes(l.where)).map((l) => <option key={l.where} value={l.where}>{l.label.replace(/^Stays (near|in|on) /, '')}</option>)}
             </optgroup>
             <optgroup label="Properties">
               {options.names.map((n) => <option key={n} value={n}>{n}</option>)}

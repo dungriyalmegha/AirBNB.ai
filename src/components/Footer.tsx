@@ -17,7 +17,7 @@ export function Footer() {
   ].filter((s) => s.href)
 
   return (
-    <footer className="mt-24 bg-forest text-ivory/80">
+    <footer className="mt-24 bg-forest pb-16 text-ivory/80 lg:pb-0">
       <div className="container-page grid gap-12 py-16 md:grid-cols-2 lg:grid-cols-12">
         <div className="lg:col-span-4">
           <Logo light />

@@ -1,19 +1,22 @@
 import type { Settings } from '../types'
+import { DEFAULT_HERO, DEFAULT_HERO_ALT } from './gurgaon'
 
 export const defaultSettings: Settings = {
   businessName: 'Willow & Stone Stays',
   logoUrl: '',
-  tagline: 'Thoughtfully curated stays for beautiful escapes.',
+  tagline: 'Thoughtfully curated stays in Gurgaon, close to Cyber City.',
   // Placeholder number — change it in Admin → Settings before going live.
   whatsappNumber: '919999999999',
   contactEmail: 'hello@willowandstone.example',
   contactPhone: '+91 99999 99999',
-  address: 'India',
+  address: 'Gurgaon, Haryana',
   social: { instagram: 'https://instagram.com/', facebook: 'https://facebook.com/', youtube: '', x: '' },
   currency: 'INR',
   locale: 'en-IN',
   defaultCheckIn: '14:00',
   defaultCheckOut: '11:00',
+  heroImageUrl: DEFAULT_HERO,
+  heroImageAlt: DEFAULT_HERO_ALT,
   bookingPolicy:
     'Submitting an enquiry does not confirm a booking. We will contact you within a few hours to confirm availability and share payment details. Your booking is confirmed only after we send a written confirmation and receive the advance payment.',
   cancellationPolicy:

@@ -4,7 +4,8 @@
 // NOTE: localStorage lives in one browser on one device. It is fine for a demo,
 // but it is not shared between devices or users and is not secure storage.
 
-const NAMESPACE = 'wss:v1:'
+// v2: Gurgaon sample data. Bumping the version reseeds browsers that saw v1.
+const NAMESPACE = 'wss:v2:'
 
 export const storage = {
   read<T>(key: string, fallback: T): T {

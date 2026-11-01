@@ -16,6 +16,7 @@ import { ContactPage } from './pages/Info/ContactPage'
 import { NotFoundPage } from './pages/Info/NotFoundPage'
 import { PoliciesPage } from './pages/Info/PoliciesPage'
 import { PropertiesPage } from './pages/Properties/PropertiesPage'
+import { SavedPage } from './pages/Properties/SavedPage'
 import { PropertyDetailsPage } from './pages/PropertyDetails/PropertyDetailsPage'
 
 export default function App() {
@@ -25,6 +26,7 @@ export default function App() {
         <Route index element={<HomePage />} />
         <Route path="stays" element={<PropertiesPage />} />
         <Route path="stays/:slug" element={<PropertyDetailsPage />} />
+        <Route path="saved" element={<SavedPage />} />
         <Route path="enquire" element={<EnquirePage />} />
         <Route path="about" element={<AboutPage />} />
         <Route path="contact" element={<ContactPage />} />

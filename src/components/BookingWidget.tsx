@@ -1,9 +1,10 @@
-import { AlertCircle, ChevronDown, ShieldCheck } from 'lucide-react'
+import { AlertCircle, ChevronDown, ExternalLink, ShieldCheck } from 'lucide-react'
 import { useState } from 'react'
 import { useData } from '../context/DataContext'
 import { useMoney } from '../hooks/useMoney'
 import { useWhatsApp } from '../hooks/useWhatsApp'
 import type { Property } from '../types'
+import { airbnbLink } from '../utils/airbnb'
 import { checkRange } from '../utils/availability'
 import { addDays, formatDate, today } from '../utils/dates'
 import { classNames } from '../utils/format'
@@ -123,7 +124,12 @@ export function BookingWidget({ property, stay, onChange, onEnquire }: { propert
       <ButtonA href={wa(waMsg)} target="_blank" rel="noopener noreferrer" variant="outline" size="md" full className="mt-2.5" icon={<WhatsAppIcon className="h-4 w-4 text-whatsapp" />}>
         Ask on WhatsApp
       </ButtonA>
-      <p className="mt-3 text-center text-xs text-muted">No payment now. We’ll confirm availability with you first.</p>
+      {property.airbnbUrl && (
+        <ButtonA href={airbnbLink(property.airbnbUrl, stay)} target="_blank" rel="noopener noreferrer" variant="outline" size="md" full className="mt-2.5 !border-[#ff385c]/40 !text-[#d70466] hover:!bg-[#ff385c]/5" iconRight={<ExternalLink className="h-4 w-4" />}>
+          Book instantly on Airbnb
+        </ButtonA>
+      )}
+      <p className="mt-3 text-center text-xs text-muted">Enquiries are free. We’ll confirm availability with you first.</p>
 
       {quote && (
         <div className="mt-5 space-y-2.5 border-t border-line pt-5 text-sm">

@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom'
 import { FloatingWhatsApp } from '../components/FloatingWhatsApp'
 import { Footer } from '../components/Footer'
+import { MobileTabBar } from '../components/MobileTabBar'
 import { Navbar } from '../components/Navbar'
 import { useData } from '../context/DataContext'
 import { useScrollToTop } from '../hooks/useScrollToTop'
@@ -17,6 +18,7 @@ export function PublicLayout() {
       </main>
       <Footer />
       <FloatingWhatsApp />
+      <MobileTabBar />
     </div>
   )
 }

@@ -1,4 +1,6 @@
-import { Menu, X } from 'lucide-react'
+import { Heart, Menu, X } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { useSaved } from '../hooks/useSaved'
 import { useEffect, useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { useWhatsApp } from '../hooks/useWhatsApp'
@@ -20,6 +22,7 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
   const wa = useWhatsApp()
+  const { saved } = useSaved()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40)
@@ -62,6 +65,10 @@ export function Navbar() {
           ))}
         </ul>
         <div className="flex items-center gap-2">
+          <Link to="/saved" aria-label={`Saved stays (${saved.length})`} className={classNames('relative hidden rounded-full p-2.5 transition sm:block', transparent ? 'text-ivory hover:bg-white/10' : 'text-forest hover:bg-cream')}>
+            <Heart className="h-5 w-5" />
+            {saved.length > 0 && <span className="absolute right-1 top-1 rounded-full bg-[#ff385c] px-1 text-[9px] font-bold leading-[14px] text-white">{saved.length}</span>}
+          </Link>
           <div className="hidden md:block">
             <ButtonA
             href={wa('Hello! I’d like to know more about your stays.')}

@@ -69,7 +69,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
     void refresh()
     // Keep multiple tabs in sync (e.g. admin in one tab, public site in another).
     const onStorage = (e: StorageEvent) => {
-      if (e.key?.startsWith('wss:v1:')) void refresh()
+      if (e.key?.startsWith('wss:v2:')) void refresh()
     }
     window.addEventListener('storage', onStorage)
     return () => window.removeEventListener('storage', onStorage)

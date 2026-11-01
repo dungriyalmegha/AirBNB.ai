@@ -49,7 +49,7 @@ export function PropertiesPage() {
   const results = useMemo(() => {
     const q = where.trim().toLowerCase()
     let list = properties
-      .filter((p) => !q || [p.name, p.location, p.region].some((s) => s.toLowerCase().includes(q)))
+      .filter((p) => !q || [p.name, p.location, p.region, p.type, ...p.nearby.map((n) => n.name)].some((s) => s.toLowerCase().includes(q)))
       .filter((p) => !guests || p.maxGuests >= guests)
       .filter((p) => !type || p.type === type)
       .filter((p) => !maxPrice || fromPrice(p) <= maxPrice)
@@ -75,8 +75,8 @@ export function PropertiesPage() {
     <div className="pt-28">
       <section className="container-page">
         <p className="eyebrow mb-3">Explore stays</p>
-        <h1 className="font-display text-5xl font-semibold leading-none text-forest sm:text-6xl">Find your escape</h1>
-        <p className="mt-4 max-w-xl text-ink/70">Browse our homes, check real availability for your dates and enquire in a minute.</p>
+        <h1 className="font-display text-5xl font-semibold leading-none text-forest sm:text-6xl">Stays in Gurgaon</h1>
+        <p className="mt-4 max-w-xl text-ink/70">Hand-picked homes near Cyber City, Golf Course Road and Sector 29. Check live availability, then book on Airbnb or enquire directly.</p>
         <div className="mt-8">
           <SearchBar
             key={`${where}|${checkIn}|${checkOut}|${guests}`}
@@ -113,7 +113,7 @@ export function PropertiesPage() {
           <div className="animate-fade-up mt-5 grid gap-6 rounded-3xl bg-white p-6 shadow-soft sm:grid-cols-3">
             <label className="block">
               <span className="field-label">Destination or property</span>
-              <input className="field" value={where} onChange={(e) => update({ where: e.target.value })} placeholder="e.g. Goa, Manali" />
+              <input className="field" value={where} onChange={(e) => update({ where: e.target.value })} placeholder="e.g. Cyber City, Golf Course Road" />
             </label>
             <label className="block">
               <span className="field-label">Guests</span>

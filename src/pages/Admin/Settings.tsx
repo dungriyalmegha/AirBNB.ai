@@ -1,4 +1,4 @@
-import { AlertTriangle, Database, RotateCcw, Save, Upload } from 'lucide-react'
+import { AlertTriangle, Database, ImageIcon, RotateCcw, Save, Upload } from 'lucide-react'
 import { useRef, useState } from 'react'
 import { PageHeader, Panel } from '../../components/admin/AdminUI'
 import { Button, ButtonA } from '../../components/ui/Button'
@@ -8,6 +8,8 @@ import { WhatsAppIcon } from '../../components/ui/WhatsAppIcon'
 import { useData } from '../../context/DataContext'
 import { useToast } from '../../context/ToastContext'
 import type { Settings } from '../../types'
+import { DEFAULT_HERO } from '../../data/gurgaon'
+import { SmartImage } from '../../components/ui/SmartImage'
 import { formatMoney } from '../../utils/format'
 import { fileToCompressedDataUrl } from '../../utils/image'
 import { normalizeWhatsAppNumber, whatsappLink } from '../../utils/whatsapp'
@@ -32,6 +34,8 @@ export function AdminSettings() {
   const [busy, setBusy] = useState(false)
   const [confirm, setConfirm] = useState<'reset' | 'clear' | null>(null)
   const logoRef = useRef<HTMLInputElement>(null)
+  const heroRef = useRef<HTMLInputElement>(null)
+  const [heroBusy, setHeroBusy] = useState(false)
   const set = <K extends keyof Settings>(k: K, v: Settings[K]) => setF((s) => ({ ...s, [k]: v }))
   const demoCount = enquiries.filter((e) => e.source === 'demo').length
 
@@ -71,6 +75,32 @@ export function AdminSettings() {
                 {f.logoUrl && <Button variant="ghost" size="sm" onClick={() => set('logoUrl', '')}>Remove</Button>}
               </div>
               <input value={f.logoUrl.startsWith('data:') ? '' : f.logoUrl} onChange={(e) => set('logoUrl', e.target.value)} placeholder="…or paste a logo URL" className="field mt-3 !py-2.5" aria-label="Logo URL" />
+            </div>
+          </div>
+        </Panel>
+
+        <Panel title={<span className="flex items-center gap-2"><ImageIcon className="h-4 w-4" /> Homepage photo</span>} className="xl:col-span-2">
+          <div className="grid gap-5 lg:grid-cols-[1.2fr_1fr]">
+            <div className="relative overflow-hidden rounded-2xl bg-forest">
+              <SmartImage src={f.heroImageUrl || DEFAULT_HERO} alt={f.heroImageAlt} width={1200} quietFallback className="aspect-[16/9] w-full" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+              <span className="absolute bottom-3 left-4 font-display text-2xl font-semibold text-white">Find Your Place to Slow Down.</span>
+            </div>
+            <div className="space-y-4">
+              <p className="text-sm text-ink/75">The big photo at the top of the homepage. Use your best wide, landscape shot of DLF Cyber City Building 9A &amp; 9B (at least 2000 px wide). Only use photos you took or have permission to use.</p>
+              <input ref={heroRef} type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                const file = e.target.files?.[0]
+                if (!file) return
+                setHeroBusy(true)
+                try { set('heroImageUrl', await fileToCompressedDataUrl(file, 2200, 0.82)) } catch (err) { toast(err instanceof Error ? err.message : 'Upload failed', 'error') } finally { setHeroBusy(false); e.target.value = '' }
+              }} />
+              <div className="flex flex-wrap gap-2">
+                <Button variant="secondary" size="sm" disabled={heroBusy} icon={<Upload className="h-4 w-4" />} onClick={() => heroRef.current?.click()}>{heroBusy ? 'Processing…' : 'Upload photo'}</Button>
+                <Button variant="ghost" size="sm" onClick={() => set('heroImageUrl', DEFAULT_HERO)}>Use placeholder</Button>
+              </div>
+              <input value={f.heroImageUrl.startsWith('data:') ? '' : f.heroImageUrl} onChange={(e) => set('heroImageUrl', e.target.value)} placeholder="…or paste an image link (https://…)" className="field !py-2.5" aria-label="Homepage photo URL" />
+              <TextField id="s-heroalt" label="Photo description (alt text)" value={f.heroImageAlt} onChange={(e) => set('heroImageAlt', e.target.value)} placeholder="DLF Cyber City Building 9A and 9B at dusk" />
+              <p className="text-xs text-muted">Click “Save settings” to publish the new photo.</p>
             </div>
           </div>
         </Panel>

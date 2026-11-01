@@ -10,23 +10,23 @@ import { SmartImage } from '../../components/ui/SmartImage'
 import { useData } from '../../context/DataContext'
 import { useToast } from '../../context/ToastContext'
 import type { PropertyInput } from '../../services/propertyService'
-import type { NearbyAttraction, Property, PropertyType, SeasonalPrice } from '../../types'
+import { PROPERTY_TYPES, type NearbyAttraction, type Property, type PropertyType, type SeasonalPrice } from '../../types'
+import { isValidUrl } from '../../utils/airbnb'
 import { classNames, uid } from '../../utils/format'
 import { fileToCompressedDataUrl } from '../../utils/image'
 
-const TYPES: PropertyType[] = ['Villa', 'Cottage', 'Cabin', 'Apartment', 'Farmhouse', 'Treehouse']
 const COMMON_AMENITIES = [
-  'Wi-Fi', 'Private pool', 'Air conditioning', 'Heating', 'Kitchen', 'Free parking', 'Hot water', 'Fireplace', 'Garden', 'Mountain view',
-  'Valley view', 'Workspace', 'Smart TV', 'Washing machine', 'Power backup', 'Housekeeping', 'Caretaker', 'Breakfast included', 'Pet friendly', 'Bonfire', 'BBQ grill',
+  'Wi-Fi', 'Air conditioning', 'Workspace', 'Kitchen', 'Power backup', 'Free parking', 'Lift', 'Security', 'Swimming pool', 'Gym', 'Balcony',
+  'Smart TV', 'Washing machine', 'Housekeeping', 'Self check-in', 'Hot water', 'Heating', 'Garden', 'City view', 'Breakfast (on request)', 'Pet friendly',
 ]
 
 function blank(defaults: { checkIn: string; checkOut: string }): PropertyInput {
   return {
-    name: '', type: 'Villa', location: '', region: '', tagline: '', shortDescription: '', description: '', images: [],
-    maxGuests: 2, bedrooms: 1, beds: 1, bathrooms: 1, amenities: ['Wi-Fi', 'Free parking'], highlights: [], houseRules: ['No smoking indoors', 'No parties or events'],
+    name: '', type: 'Apartment', location: '', region: '', tagline: '', shortDescription: '', description: '', images: [],
+    maxGuests: 2, bedrooms: 1, beds: 1, bathrooms: 1, amenities: ['Wi-Fi', 'Air conditioning', 'Power backup'], highlights: [], houseRules: ['No smoking indoors', 'No parties or events'],
     checkInTime: defaults.checkIn, checkOutTime: defaults.checkOut, locationInfo: '', mapQuery: '', nearby: [],
     pricing: { basePrice: 0, weekendPrice: 0, seasonal: [], includedGuests: 2, extraGuestFee: 0, cleaningFee: 0, minNights: 1 },
-    featured: false, published: false,
+    airbnbUrl: '', featured: false, published: false,
   }
 }
 
@@ -73,6 +73,7 @@ function Editor({ existing, initial, save }: { existing?: Property; initial: Pro
       if (!s.start || !s.end || s.end < s.start) e[`season${i}`] = 'End date must be on or after start date'
       if (!(s.pricePerNight > 0)) e[`season${i}`] = 'Enter a price'
     })
+    if (f.airbnbUrl && !isValidUrl(f.airbnbUrl)) e.airbnbUrl = 'Paste the full listing link, starting with https://'
     if (f.published && f.images.length === 0) e.images = 'Add at least one photo before publishing'
     return e
   }
@@ -92,6 +93,7 @@ function Editor({ existing, initial, save }: { existing?: Property; initial: Pro
         ...f,
         name: f.name.trim(),
         mapQuery: f.mapQuery.trim() || f.location.trim(),
+        airbnbUrl: (f.airbnbUrl ?? '').trim(),
         highlights: f.highlights.map((s) => s.trim()).filter(Boolean),
         houseRules: f.houseRules.map((s) => s.trim()).filter(Boolean),
         nearby: f.nearby.filter((n) => n.name.trim()),
@@ -123,13 +125,13 @@ function Editor({ existing, initial, save }: { existing?: Property; initial: Pro
         <div className="space-y-6">
           <Panel title="Basics">
             <div className="grid gap-5 sm:grid-cols-2">
-              <TextField id="name" label="Property name" value={f.name} onChange={(e) => set('name', e.target.value)} error={errors.name} placeholder="e.g. Casa Ivory" />
+              <TextField id="name" label="Property name" value={f.name} onChange={(e) => set('name', e.target.value)} error={errors.name} placeholder="e.g. The Cyber Loft" />
               <SelectField id="type" label="Property type" value={f.type} onChange={(e) => set('type', e.target.value as PropertyType)}>
-                {TYPES.map((t) => <option key={t}>{t}</option>)}
+                {PROPERTY_TYPES.map((t) => <option key={t}>{t}</option>)}
               </SelectField>
-              <TextField id="location" label="Location (shown to guests)" value={f.location} onChange={(e) => set('location', e.target.value)} error={errors.location} placeholder="Assagao, North Goa" />
-              <TextField id="region" label="Destination (for search)" value={f.region} onChange={(e) => set('region', e.target.value)} error={errors.region} placeholder="Goa" />
-              <TextField id="tagline" label="Tagline" value={f.tagline} onChange={(e) => set('tagline', e.target.value)} placeholder="A private pool villa in the green heart of North Goa" className="sm:col-span-2" />
+              <TextField id="location" label="Location (shown to guests)" value={f.location} onChange={(e) => set('location', e.target.value)} error={errors.location} placeholder="DLF Phase 2, Gurgaon" />
+              <TextField id="region" label="Area (for search)" value={f.region} onChange={(e) => set('region', e.target.value)} error={errors.region} placeholder="Cyber City" />
+              <TextField id="tagline" label="Tagline" value={f.tagline} onChange={(e) => set('tagline', e.target.value)} placeholder="A designer studio a short walk from Cyber Hub" className="sm:col-span-2" />
               <TextArea id="shortDescription" label="Short description (cards)" value={f.shortDescription} onChange={(e) => set('shortDescription', e.target.value)} error={errors.shortDescription} rows={2} maxLength={240} hint={`${f.shortDescription.length}/240`} className="sm:col-span-2" />
               <TextArea id="description" label="Full description" value={f.description} onChange={(e) => set('description', e.target.value)} rows={8} hint="Leave a blank line between paragraphs." className="sm:col-span-2" />
             </div>
@@ -198,7 +200,7 @@ function Editor({ existing, initial, save }: { existing?: Property; initial: Pro
 
           <Panel title="Highlights & house rules">
             <div className="grid gap-8 md:grid-cols-2">
-              <ListEditor label="Highlights" items={f.highlights} onChange={(v) => set('highlights', v)} placeholder="Private pool surrounded by a tropical garden" />
+              <ListEditor label="Highlights" items={f.highlights} onChange={(v) => set('highlights', v)} placeholder="Walk to Cyber Hub and DLF Cyber City" />
               <ListEditor label="House rules" items={f.houseRules} onChange={(v) => set('houseRules', v)} placeholder="No smoking indoors" />
             </div>
           </Panel>
@@ -206,7 +208,7 @@ function Editor({ existing, initial, save }: { existing?: Property; initial: Pro
           <Panel title="Location">
             <div className="grid gap-5">
               <TextArea id="locationInfo" label="Getting there / area info" value={f.locationInfo} onChange={(e) => set('locationInfo', e.target.value)} rows={3} />
-              <TextField id="mapQuery" label="Map search" value={f.mapQuery} onChange={(e) => set('mapQuery', e.target.value)} hint="What to show on the map, e.g. a village or landmark. Avoid your exact address." placeholder={f.location || 'Assagao, Goa'} />
+              <TextField id="mapQuery" label="Map search" value={f.mapQuery} onChange={(e) => set('mapQuery', e.target.value)} hint="What to show on the map, e.g. a village or landmark. Avoid your exact address." placeholder={f.location || 'DLF Cyber City, Gurugram'} />
               <NearbyEditor items={f.nearby} onChange={(v) => set('nearby', v)} />
             </div>
           </Panel>
@@ -219,6 +221,10 @@ function Editor({ existing, initial, save }: { existing?: Property; initial: Pro
                 <Toggle id="published" checked={f.published} onChange={(v) => set('published', v)} label="Published" description="Show this property on the website" />
                 <Toggle id="featured" checked={f.featured} onChange={(v) => set('featured', v)} label="Featured" description="Show on the homepage and first in listings" />
               </div>
+            </Panel>
+            <Panel title="Airbnb listing">
+              <TextField id="airbnbUrl" label="Airbnb link (optional)" value={f.airbnbUrl ?? ''} error={errors.airbnbUrl} onChange={(e) => set('airbnbUrl', e.target.value)} placeholder="https://www.airbnb.co.in/rooms/…"
+                hint="Adds a “Book on Airbnb” button. Guests’ dates and guest count are passed to Airbnb." />
             </Panel>
             <Panel title="Check-in & check-out">
               <div className="grid grid-cols-2 gap-4">

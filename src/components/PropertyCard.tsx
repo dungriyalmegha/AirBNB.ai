@@ -1,9 +1,11 @@
-import { BedDouble, Bath, ChevronLeft, ChevronRight, MapPin, Users } from 'lucide-react'
+import { BedDouble, Bath, ChevronLeft, ChevronRight, ExternalLink, Heart, MapPin, Users } from 'lucide-react'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useData } from '../context/DataContext'
 import { useMoney } from '../hooks/useMoney'
+import { useSaved } from '../hooks/useSaved'
 import { useWhatsApp } from '../hooks/useWhatsApp'
+import { airbnbLink } from '../utils/airbnb'
 import type { Property } from '../types'
 import { availabilityLabel, openNights } from '../utils/availability'
 import { classNames } from '../utils/format'
@@ -18,6 +20,8 @@ export function PropertyCard({ property, showDescription, query = '' }: { proper
   const money = useMoney()
   const wa = useWhatsApp()
   const { overrides, bookings } = useData()
+  const { isSaved, toggle } = useSaved()
+  const saved = isSaved(property.id)
   const [i, setI] = useState(0)
   const imgs = property.images.length ? property.images : [{ id: 'x', url: '', alt: property.name }]
   const avail = availabilityLabel(openNights(property.id, overrides, bookings))
@@ -40,10 +44,19 @@ export function PropertyCard({ property, showDescription, query = '' }: { proper
           />
         </div>
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/35 via-transparent to-transparent" />
-        <div className="absolute left-4 top-4 flex gap-2">
+        <div className="absolute left-4 top-4 flex flex-wrap gap-2 pr-14">
           {property.featured && <Badge tone="accent" className="bg-white/95 text-accent-dark shadow-sm">Featured</Badge>}
           <Badge className="bg-white/95 shadow-sm">{property.type}</Badge>
+          {property.airbnbUrl && <Badge className="bg-[#ff385c] !text-white shadow-sm">Also on Airbnb</Badge>}
         </div>
+        <button
+          onClick={(e) => { e.preventDefault(); toggle(property.id) }}
+          aria-pressed={saved}
+          aria-label={saved ? `Remove ${property.name} from saved` : `Save ${property.name}`}
+          className="absolute right-3 top-3 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-forest shadow-sm backdrop-blur transition hover:scale-110"
+        >
+          <Heart className={classNames('h-[18px] w-[18px] transition', saved && 'fill-[#ff385c] text-[#ff385c]')} />
+        </button>
         {imgs.length > 1 && (
           <>
             <button onClick={go(-1)} aria-label="Previous photo" className="absolute left-3 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-forest opacity-0 shadow transition group-hover:opacity-100 focus:opacity-100">
@@ -91,8 +104,12 @@ export function PropertyCard({ property, showDescription, query = '' }: { proper
         </p>
 
         <div className="mt-5 flex gap-2">
-          <ButtonLink to={href} variant="primary" size="sm" className="flex-1">View property</ButtonLink>
-          <ButtonLink to={`/enquire?property=${property.slug}`} variant="outline" size="sm" className="flex-1">Enquire now</ButtonLink>
+          <ButtonLink to={href} variant="primary" size="sm" className="flex-1">View stay</ButtonLink>
+          {property.airbnbUrl ? (
+            <ButtonA href={airbnbLink(property.airbnbUrl)} target="_blank" rel="noopener noreferrer" variant="outline" size="sm" className="flex-1" iconRight={<ExternalLink className="h-3.5 w-3.5" />}>Book on Airbnb</ButtonA>
+          ) : (
+            <ButtonLink to={`/enquire?property=${property.slug}`} variant="outline" size="sm" className="flex-1">Enquire now</ButtonLink>
+          )}
           <ButtonA
             href={wa(enquiryMessage({ propertyName: property.name }))}
             target="_blank"

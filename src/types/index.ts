@@ -5,7 +5,8 @@ export type ID = string
 /** ISO calendar date, e.g. "2026-12-24" (no time, no timezone). */
 export type ISODate = string
 
-export type PropertyType = 'Villa' | 'Cottage' | 'Cabin' | 'Apartment' | 'Farmhouse' | 'Treehouse'
+export const PROPERTY_TYPES = ['Studio', 'Apartment', 'Serviced apartment', 'Penthouse', 'Independent floor', 'Villa'] as const
+export type PropertyType = (typeof PROPERTY_TYPES)[number]
 
 export interface PropertyImage {
   id: ID
@@ -64,6 +65,8 @@ export interface Property {
   mapQuery: string
   nearby: NearbyAttraction[]
   pricing: PropertyPricing
+  /** Optional link to this home's Airbnb listing. Guests can book there instantly. */
+  airbnbUrl?: string
   featured: boolean
   published: boolean
   createdAt: string
@@ -171,6 +174,9 @@ export interface Settings {
   locale: string
   defaultCheckIn: string
   defaultCheckOut: string
+  /** Homepage hero photo (e.g. DLF Cyber City Building 9A/9B). */
+  heroImageUrl: string
+  heroImageAlt: string
   bookingPolicy: string
   cancellationPolicy: string
   privacyPolicy: string

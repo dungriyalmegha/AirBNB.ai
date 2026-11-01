@@ -1,10 +1,16 @@
 import {
   Bath, Car, ChefHat, Coffee, Dog, Flame, Flower2, Laptop, Leaf, type LucideIcon, Mountain, Snowflake, Sparkles, Thermometer,
-  Trees, Tv, UserRound, Utensils, Waves, Wifi, Zap, Check,
+  Trees, Tv, UserRound, Utensils, Waves, Wifi, Zap, Check, Dumbbell, ArrowUpDown, ShieldCheck, Building2, WashingMachine, KeyRound,
 } from 'lucide-react'
 
 const map: [RegExp, LucideIcon][] = [
   [/wi-?fi|internet/i, Wifi],
+  [/gym|fitness/i, Dumbbell],
+  [/lift|elevator/i, ArrowUpDown],
+  [/security|guard/i, ShieldCheck],
+  [/balcony|terrace/i, Building2],
+  [/washing|laundry/i, WashingMachine],
+  [/self check-?in|smart lock/i, KeyRound],
   [/pool/i, Waves],
   [/air ?con|a\/c|\bac\b/i, Snowflake],
   [/kitchen/i, Utensils],

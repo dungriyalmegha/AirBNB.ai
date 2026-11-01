@@ -1,6 +1,6 @@
-# AirBNB.ai: boutique property booking website
+# AirBNB.ai: boutique stays in Gurgaon
 
-A premium, owner-run vacation rental site (2–3 properties) with a public booking-enquiry website and a separate owner dashboard at `/admin`.
+A premium, owner-run short-stay site for a few homes in Gurgaon (near DLF Cyber City, Golf Course Road and Sector 29) with a public booking-enquiry website and a separate owner dashboard at `/admin`.
 Built with React, TypeScript, Tailwind CSS v4, React Router and Lucide icons on Vite.
 
 > **This is a frontend-only prototype.** Data is saved in the browser's localStorage and the admin login is a demo. See "Before going live" below.
@@ -19,6 +19,12 @@ npm run preview    # serve the production build
 When deploying the static build (Netlify, Vercel, Cloudflare Pages…), add an SPA fallback so routes like `/stays/casa-ivory-villa` serve `index.html`.
 
 ## What's included
+
+### Gurgaon focus and Airbnb
+- **Homepage photo**: meant to be DLF Cyber City Building 9A & 9B. Upload your own photo in Admin → Settings → Homepage photo (a placeholder glass-tower image is used until then). Only use photos you took or have permission to use.
+- **Airbnb links**: each property has an optional Airbnb listing link (Admin → Properties → edit → Airbnb listing). When set, cards show "Also on Airbnb" and a "Book on Airbnb" button, and the property page shows "Book instantly on Airbnb" with the guest's dates and guest count passed through.
+- **Layout ideas from cozycozy**: stay-type tiles under the hero, a listing grid with promo banners, neighbourhood tiles, an FAQ accordion, "Find a stay near…" link clusters (Cyber Hub, Building 9A & 9B, Golf Course Road, the airport…), saved stays (heart icon) and an app-style bottom tab bar on phones.
+- Local content (areas, landmarks, FAQs) lives in `src/data/gurgaon.ts`. The three sample homes in `src/data/properties.ts` are placeholders; replace them with your real listings from the admin.
 
 ### Public website
 - **Home**: full-screen hero, search (destination, dates, guests), featured homes, why book with us, experiences, testimonials (clearly labelled as samples), a "plan ahead" section that only uses real availability and real seasonal prices, footer with contact, WhatsApp, socials and policies.
