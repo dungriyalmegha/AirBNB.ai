@@ -102,7 +102,7 @@ export function PropertyCard({ property, showDescription, query = '' }: { proper
         {property.occasions.length > 0 && (
           <ul className="mt-3 flex flex-wrap gap-1.5" aria-label="Good for">
             {property.occasions.slice(0, 4).map((o) => (
-              <li key={o} className="flex items-center gap-1 rounded-full bg-cream px-2.5 py-1 text-[11px] font-semibold text-forest"><OccasionIcon name={o} className="h-3 w-3 text-accent-dark" />{o}</li>
+              <li key={o} className="flex items-center gap-1 rounded-full bg-sand/60 px-2.5 py-1 text-[11px] font-semibold text-forest"><OccasionIcon name={o} className="h-3 w-3 text-accent-dark" />{o}</li>
             ))}
           </ul>
         )}

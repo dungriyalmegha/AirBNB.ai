@@ -23,8 +23,8 @@ export function AboutPage() {
           <ButtonLink to="/stays" className="mt-8" iconRight={<ArrowRight className="h-4 w-4" />}>See our places</ButtonLink>
         </div>
         <div className="grid grid-cols-2 gap-4">
-          <SmartImage src={unsplash('1715870251864-64fd4a6ae4ad', 900)} alt="Gurgaon’s high-rise skyline" className="aspect-[3/4] w-full rounded-3xl" />
-          <SmartImage src={unsplash('1583847268964-b28dc8f51f92', 900)} alt="Light-filled apartment living room" className="mt-12 aspect-[3/4] w-full rounded-3xl" />
+          <SmartImage src={unsplash('1715870251864-64fd4a6ae4ad', 900)} alt="Gurgaon’s high-rise skyline" className="arch aspect-[3/4] w-full" />
+          <SmartImage src={unsplash('1583847268964-b28dc8f51f92', 900)} alt="Light-filled apartment living room" className="arch mt-12 aspect-[3/4] w-full" />
         </div>
       </section>
       <section className="container-page mt-24 grid gap-6 sm:grid-cols-3">

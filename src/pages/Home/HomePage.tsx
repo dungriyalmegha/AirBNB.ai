@@ -1,6 +1,7 @@
-import { ArrowRight, Briefcase, Cake, CalendarCheck, ChevronDown, KeyRound, MapPin, MessageCircle, Quote, Search, Sparkle } from 'lucide-react'
+import { ArrowRight, Briefcase, Cake, CalendarCheck, ChevronDown, KeyRound, MapPin, MessageCircle, Quote, Search } from 'lucide-react'
 import { Fragment, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { Flower, Rainbow, Sun, Wave } from '../../components/Boho'
 import { OccasionIcon } from '../../components/OccasionIcon'
 import { PropertyCard } from '../../components/PropertyCard'
 import { SearchBar } from '../../components/SearchBar'
@@ -41,6 +42,7 @@ export function HomePage() {
         <div className="absolute inset-0 -z-10 bg-gradient-to-b from-night/75 via-night/40 to-night/90" />
         <div className="pointer-events-none absolute -left-40 top-1/3 -z-10 h-[28rem] w-[28rem] rounded-full bg-coral/25 blur-[130px]" />
         <div className="pointer-events-none absolute -right-20 top-0 -z-10 h-96 w-96 rounded-full bg-marigold/20 blur-[130px]" />
+        <Rainbow className="pointer-events-none absolute bottom-0 right-40 -z-10 hidden h-32 w-52 opacity-60 xl:block" />
         <div className="container-page">
           <div className="relative max-w-4xl animate-fade-up">
             <p className="mb-5 inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-sand ring-1 ring-white/20 backdrop-blur">
@@ -49,9 +51,10 @@ export function HomePage() {
             <h1 className="font-display text-[50px] font-semibold leading-[0.95] text-ivory sm:text-7xl lg:text-[92px]" aria-label="The whole place. Your people. Your party.">
               <span aria-hidden="true">The whole place.<br />Your people.<br /><RotatingWord words={HERO_WORDS} /></span>
             </h1>
-            <span className="absolute -top-2 right-0 hidden animate-wiggle items-center gap-2 rounded-full bg-marigold px-5 py-2.5 text-sm font-bold text-ink shadow-lift lg:flex">
-              <KeyRound className="h-4 w-4" /> No reception. No strangers.
+            <span className="absolute -top-4 right-0 hidden animate-wiggle items-center gap-2 rounded-full bg-marigold px-5 py-2 font-hand text-2xl font-bold text-ink shadow-lift lg:flex">
+              <Flower className="h-5 w-5" color="#c2603a" /> no reception, no strangers
             </span>
+            <Sun className="pointer-events-none absolute -right-4 top-24 hidden h-28 w-28 text-marigold/70 lg:block" />
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-ivory/85">
               Rent an entire flat in {CITY} for a birthday, a house party, an office night out or just a weekend away. Bring your crew. It’s all yours.
             </p>
@@ -121,13 +124,14 @@ function OccasionMarquee() {
     <ul className="flex shrink-0 items-center" aria-hidden={hidden}>
       {items.map((t) => (
         <li key={t} className="flex items-center whitespace-nowrap px-6 font-display text-2xl italic text-ivory/90 sm:text-3xl">
-          {t}<Sparkle className="ml-12 h-4 w-4 text-marigold" />
+          {t}<Flower className="ml-12 h-5 w-5 text-marigold" />
         </li>
       ))}
     </ul>
   )
   return (
     <div className="relative overflow-hidden bg-night py-5" aria-label="What people book us for">
+      <div className="block-print pointer-events-none absolute inset-0 opacity-[0.12]" />
       <div className="flex w-max animate-marquee hover:[animation-play-state:paused]">{row()}{row(true)}</div>
     </div>
   )
@@ -148,13 +152,13 @@ function PlanTiles() {
         {occasionInfo.map((o, i) => {
           const count = properties.filter((p) => o.occasion === 'Staycation' || p.occasions.includes(o.occasion)).length
           return (
-            <Link key={o.occasion} to={`/stays?plan=${encodeURIComponent(o.occasion)}`} className={classNames('group relative block overflow-hidden rounded-3xl', i === 0 && 'col-span-2 lg:row-span-2')}>
+            <Link key={o.occasion} to={`/stays?plan=${encodeURIComponent(o.occasion)}`} className={classNames('group relative block overflow-hidden', i === 0 ? 'col-span-2 rounded-[2rem] lg:row-span-2 lg:arch' : 'arch')}>
               <SmartImage src={o.image} alt="" className={classNames('w-full transition duration-700 group-hover:scale-105', i === 0 ? 'aspect-[4/3] lg:aspect-auto lg:h-full' : 'aspect-[4/5]')} />
               <div className="absolute inset-0 bg-gradient-to-t from-night/90 via-night/25 to-transparent" />
-              <div className="absolute left-4 top-4 flex h-10 w-10 items-center justify-center rounded-2xl bg-marigold text-ink shadow-lift transition group-hover:-rotate-6 sm:h-11 sm:w-11">
-                <OccasionIcon name={o.occasion} className="h-5 w-5" />
-              </div>
               <div className="absolute inset-x-0 bottom-0 p-4 text-ivory sm:p-6">
+                <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-full bg-marigold text-ink shadow-lift transition group-hover:-rotate-12 sm:h-10 sm:w-10">
+                  <OccasionIcon name={o.occasion} className="h-[18px] w-[18px]" />
+                </div>
                 <h3 className={classNames('font-display font-semibold leading-tight', i === 0 ? 'text-4xl sm:text-5xl' : 'text-2xl sm:text-3xl')}>{o.title}</h3>
                 <p className={classNames('mt-1 text-ivory/80', i === 0 ? 'text-base' : 'hidden text-sm sm:block')}>{o.line}</p>
                 <p className="mt-3 flex items-center gap-1.5 text-xs font-semibold text-marigold">
@@ -167,8 +171,9 @@ function PlanTiles() {
         {/* Fills the last row: 1 big tile (4 slots) + 6 small + this wide one = 3 full rows. */}
         <a href={wa('Hi! I’m planning something a bit different. Can you help?')} target="_blank" rel="noopener noreferrer" className="group relative col-span-2 flex min-h-[200px] flex-col justify-end overflow-hidden rounded-3xl bg-coral p-6 text-ivory sm:p-8">
           <div className="absolute -right-12 -top-12 h-52 w-52 rounded-full bg-marigold/40 blur-2xl transition group-hover:scale-110" />
-          <Sparkle className="absolute right-8 top-8 h-8 w-8 text-marigold transition group-hover:rotate-45" />
-          <p className="eyebrow mb-2 !text-ivory/80">Something else?</p>
+          <div className="block-print pointer-events-none absolute inset-0 opacity-25" />
+          <Sun className="absolute right-6 top-5 h-16 w-16 text-marigold transition duration-700 group-hover:rotate-45" />
+          <p className="mb-1 font-hand text-2xl font-bold text-ivory/90">something else?</p>
           <h3 className="font-display text-3xl font-semibold leading-tight sm:text-4xl">Anniversary, bachelor night, match screening…</h3>
           <p className="mt-3 flex items-center gap-2 text-sm font-semibold"><WhatsAppIcon className="h-4 w-4" /> Tell us the plan on WhatsApp <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" /></p>
         </a>
@@ -181,9 +186,9 @@ function PromoCard({ kind, className }: { kind: 'office' | 'extras'; className?:
   const wa = useWhatsApp()
   const office = kind === 'office'
   return (
-    <aside className={classNames('relative flex min-h-[340px] flex-col justify-end overflow-hidden rounded-3xl p-7', office ? 'bg-night text-ivory' : 'bg-marigold text-ink', className)}>
-      <div className={classNames('absolute -right-10 -top-10 h-44 w-44 rounded-full', office ? 'bg-coral/30 blur-2xl' : 'bg-coral/25')} />
-      <div className={classNames('absolute right-8 top-8 flex h-12 w-12 items-center justify-center rounded-2xl', office ? 'bg-ivory/10' : 'bg-white/60')}>
+    <aside className={classNames('relative flex min-h-[340px] flex-col justify-end overflow-hidden rounded-3xl p-7', office ? 'bg-night text-ivory' : 'bg-clay text-ink', className)}>
+      {office ? <div className="block-print pointer-events-none absolute inset-0 opacity-[0.14]" /> : <Rainbow className="pointer-events-none absolute -right-4 top-6 h-24 w-36 opacity-80" />}
+      <div className={classNames('absolute left-7 top-7 flex h-12 w-12 items-center justify-center rounded-full', office ? 'bg-ivory/10' : 'bg-white/60')}>
         {office ? <Briefcase className="h-5 w-5" /> : <Cake className="h-5 w-5" />}
       </div>
       <p className={classNames('eyebrow mb-3', office ? '!text-marigold' : '!text-ink/70')}>{office ? 'Team night?' : 'Make it special'}</p>
@@ -209,16 +214,20 @@ function HowItWorks() {
     { Icon: KeyRound, title: 'Get the keys', body: 'The whole place is yours. Party, crash, and check out by 11 the next morning.' },
   ]
   return (
-    <section className="relative overflow-hidden bg-night py-24 text-ivory">
+    <section className="relative">
+    <Wave className="text-night" />
+    <div className="relative overflow-hidden bg-night py-24 text-ivory">
+      <div className="block-print pointer-events-none absolute inset-0 opacity-[0.07]" />
       <div className="pointer-events-none absolute -right-32 top-0 h-96 w-96 rounded-full bg-coral/20 blur-[120px]" />
+      <Sun className="pointer-events-none absolute right-10 top-16 hidden h-24 w-24 text-marigold/60 md:block" />
       <div className="container-page relative">
         <p className="eyebrow mb-3 !text-marigold">How it works</p>
         <h2 className="max-w-2xl font-display text-4xl font-semibold leading-[1.05] sm:text-6xl">Not a hotel. <em className="font-medium text-marigold">Your place</em> for the night.</h2>
         <ol className="mt-14 grid gap-5 md:grid-cols-3">
           {steps.map(({ Icon, title, body }, i) => (
-            <li key={title} className="relative rounded-3xl bg-ivory/[0.05] p-7 ring-1 ring-ivory/10">
-              <span className="font-display text-6xl font-semibold text-ivory/15">0{i + 1}</span>
-              <div className="absolute right-7 top-7 flex h-12 w-12 items-center justify-center rounded-2xl bg-marigold text-ink"><Icon className="h-5 w-5" /></div>
+            <li key={title} className="relative rounded-t-[7rem] rounded-b-3xl bg-ivory/[0.05] px-7 pb-7 pt-12 ring-1 ring-ivory/10">
+              <span className="font-hand text-5xl font-bold text-marigold/80">step {i + 1}</span>
+              <div className="absolute right-7 top-10 flex h-12 w-12 items-center justify-center rounded-full bg-marigold text-ink"><Icon className="h-5 w-5" /></div>
               <h3 className="mt-4 font-display text-2xl font-semibold">{title}</h3>
               <p className="mt-2 text-sm leading-relaxed text-ivory/70">{body}</p>
             </li>
@@ -229,13 +238,15 @@ function HowItWorks() {
           <ul className="mt-6 grid gap-x-8 gap-y-6 sm:grid-cols-2 lg:grid-cols-4">
             {partyRules.map((r) => (
               <li key={r.title}>
-                <p className="flex items-center gap-2 font-semibold"><Sparkle className="h-4 w-4 text-marigold" />{r.title}</p>
+                <p className="flex items-center gap-2 font-semibold"><Flower className="h-4 w-4 text-marigold" />{r.title}</p>
                 <p className="mt-1.5 text-sm leading-relaxed text-ivory/65">{r.body}</p>
               </li>
             ))}
           </ul>
         </div>
       </div>
+    </div>
+    <Wave className="text-night" flip />
     </section>
   )
 }
@@ -249,7 +260,7 @@ function Neighbourhoods() {
         {neighbourhoods.map((n) => {
           const count = properties.filter((p) => [p.region, p.location].some((s) => s.toLowerCase().includes(n.query.toLowerCase()))).length
           return (
-            <Link key={n.name} to={`/stays?where=${encodeURIComponent(n.query)}`} className="group relative block overflow-hidden rounded-3xl">
+            <Link key={n.name} to={`/stays?where=${encodeURIComponent(n.query)}`} className="arch group relative block overflow-hidden">
               <SmartImage src={n.image} alt={`${n.name}, ${CITY}`} className="aspect-[4/5] w-full transition duration-700 group-hover:scale-105" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#141b16]/85 via-[#141b16]/20 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-6 text-ivory">
@@ -273,8 +284,9 @@ function Neighbourhoods() {
 function TestimonialsSection() {
   const anySample = testimonials.some((t) => t.isSample)
   return (
-    <section className="bg-forest py-24 text-ivory">
-      <div className="container-page">
+    <section className="relative overflow-hidden bg-forest py-24 text-ivory">
+      <div className="block-print pointer-events-none absolute inset-0 opacity-[0.08]" />
+      <div className="container-page relative">
         <div className="mb-12 flex flex-col items-center text-center">
           <p className="eyebrow mb-3 !text-accent">Guest stories</p>
           <h2 className="font-display text-4xl font-semibold sm:text-5xl">Words from our guests</h2>

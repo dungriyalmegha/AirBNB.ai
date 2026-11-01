@@ -121,7 +121,7 @@ function PropertyDetails({ slug }: { slug: string }) {
               </div>
               {property.occasions.length > 0 && (
                 <div className="mt-6">
-                  <h3 className="text-xs font-semibold uppercase tracking-[0.18em] text-ink/60">Perfect for</h3>
+                  <h3 className="font-hand text-2xl font-bold text-coral">perfect for…</h3>
                   <ul className="mt-3 flex flex-wrap gap-2">
                     {property.occasions.map((o) => (
                       <li key={o}>
