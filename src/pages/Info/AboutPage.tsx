@@ -23,8 +23,8 @@ export function AboutPage() {
           <ButtonLink to="/stays" className="mt-8" iconRight={<ArrowRight className="h-4 w-4" />}>Explore our stays</ButtonLink>
         </div>
         <div className="grid grid-cols-2 gap-4">
-          <SmartImage src={unsplash('1486406146926-c627a92ad1ab', 900)} alt="Glass towers of Cyber City, Gurgaon" className="aspect-[3/4] w-full rounded-3xl" />
-          <SmartImage src={unsplash('1502672260266-1c1ef2d93688', 900)} alt="Warm, light-filled living room" className="mt-12 aspect-[3/4] w-full rounded-3xl" />
+          <SmartImage src={unsplash('1715870251864-64fd4a6ae4ad', 900)} alt="Gurgaon’s high-rise skyline" className="aspect-[3/4] w-full rounded-3xl" />
+          <SmartImage src={unsplash('1583847268964-b28dc8f51f92', 900)} alt="Light-filled apartment living room" className="mt-12 aspect-[3/4] w-full rounded-3xl" />
         </div>
       </section>
       <section className="container-page mt-24 grid gap-6 sm:grid-cols-3">

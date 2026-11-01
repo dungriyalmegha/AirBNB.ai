@@ -80,7 +80,7 @@ export function seedDemoActivity(): { enquiries: Enquiry[]; bookings: Booking[];
       notes: [], bookingId: 'bk_demo_2', source: 'demo', createdAt: ago(4), updatedAt: ago(3),
     },
     {
-      id: 'enq_demo_3', reference: 'ENQ-DEMO03', propertyId: 'prop_courtyard', propertyName: 'The Courtyard Suite',
+      id: 'enq_demo_3', reference: 'ENQ-DEMO03', propertyId: 'prop_courtyard', propertyName: 'The Leisure Valley Suite',
       fullName: 'Demo Guest (Meera K.)', phone: '+91 98000 00003', email: 'demo.guest3@example.com',
       checkIn: addDays(t, 30), checkOut: addDays(t, 32), adults: 2, children: 1,
       specialRequests: 'Early check-in if possible.', estimatedTotal: 12700, status: 'new',

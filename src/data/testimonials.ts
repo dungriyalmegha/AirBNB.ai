@@ -8,8 +8,8 @@ export const testimonials: Testimonial[] = [
     name: 'Sample guest',
     from: 'Bengaluru',
     rating: 5,
-    stay: 'The Courtyard Suite',
-    text: 'Placeholder review. Replace this with a real guest’s words about the quiet courtyard, the walks in Leisure Valley and the Sector 29 restaurants.',
+    stay: 'The Leisure Valley Suite',
+    text: 'Placeholder review. Replace this with a real guest’s words about the quiet balcony, the walks in Leisure Valley and the Sector 29 restaurants.',
     isSample: true,
   },
   {

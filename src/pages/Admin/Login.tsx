@@ -35,7 +35,7 @@ export function AdminLogin() {
   return (
     <div className="grid min-h-screen lg:grid-cols-2">
       <div className="relative hidden lg:block">
-        <SmartImage src={unsplash('1600596542815-ffad4c1539a9', 1600)} alt="" quietFallback className="absolute inset-0 h-full w-full" />
+        <SmartImage src={unsplash('1731520705670-6ae7e5dec0f3', 1600)} alt="" quietFallback className="absolute inset-0 h-full w-full" />
         <div className="absolute inset-0 bg-forest/55" />
         <div className="absolute bottom-12 left-12 right-12 text-ivory">
           <div className="font-display text-5xl font-semibold leading-tight">{settings.businessName}</div>

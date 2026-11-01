@@ -7,8 +7,9 @@ export const CITY = 'Gurgaon'
 
 // Placeholder until the owner uploads their own photo of DLF Cyber City
 // Building 9A & 9B in Admin → Settings → Homepage photo.
-export const DEFAULT_HERO = unsplash('1486406146926-c627a92ad1ab', 2400)
-export const DEFAULT_HERO_ALT = 'Glass towers of DLF Cyber City, Gurgaon'
+// Placeholder: Cyber City, Gurugram by Ishaan Sen on Unsplash (free Unsplash License).
+export const DEFAULT_HERO = unsplash('1775582336512-a8a714980243', 2400)
+export const DEFAULT_HERO_ALT = 'Glass office building with the Cyber City sign in Gurgaon'
 
 export interface Neighbourhood {
   name: string
@@ -25,21 +26,21 @@ export const neighbourhoods: Neighbourhood[] = [
     query: 'Cyber City',
     blurb: 'Gurgaon’s business heart: glass towers, Cyber Hub restaurants and the Rapid Metro.',
     landmarks: ['DLF Building 9A & 9B', 'Cyber Hub', 'Rapid Metro'],
-    image: unsplash('1486406146926-c627a92ad1ab', 1200),
+    image: unsplash('1775582336512-a8a714980243', 1200),
   },
   {
     name: 'Golf Course Road',
     query: 'Golf Course Road',
     blurb: 'Leafy high-rise living, cafés and Galleria Market, a short drive from everything.',
     landmarks: ['Galleria Market', 'DLF Golf & Country Club', 'Sector 54 metro'],
-    image: unsplash('1449824913935-59a10b8d2000', 1200),
+    image: unsplash('1731520705670-6ae7e5dec0f3', 1200),
   },
   {
     name: 'Sector 29',
     query: 'Sector 29',
     blurb: 'Restaurants, bars and the green lawns of Leisure Valley Park.',
     landmarks: ['Leisure Valley Park', 'Sector 29 market', 'Millennium City Centre'],
-    image: unsplash('1414235077428-338989a2e8c0', 1200),
+    image: unsplash('1695667424131-a9680e0307ee', 1200),
   },
 ]
 

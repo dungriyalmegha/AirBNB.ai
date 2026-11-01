@@ -1,5 +1,5 @@
 import {
-  Bath, Car, ChefHat, Coffee, Dog, Flame, Flower2, Laptop, Leaf, type LucideIcon, Mountain, Snowflake, Sparkles, Thermometer,
+  Bath, Car, ChefHat, Coffee, Dog, Flame, Flower2, Laptop, Leaf, type LucideIcon, Snowflake, Sparkles, Thermometer,
   Trees, Tv, UserRound, Utensils, Waves, Wifi, Zap, Check, Dumbbell, ArrowUpDown, ShieldCheck, Building2, WashingMachine, KeyRound,
 } from 'lucide-react'
 
@@ -19,7 +19,7 @@ const map: [RegExp, LucideIcon][] = [
   [/fire|bonfire|stove/i, Flame],
   [/heat/i, Thermometer],
   [/hot water|bath|shower/i, Bath],
-  [/mountain|valley|view/i, Mountain],
+  [/view/i, Building2],
   [/garden/i, Flower2],
   [/pet|dog/i, Dog],
   [/work|desk/i, Laptop],
