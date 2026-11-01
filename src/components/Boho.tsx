@@ -19,9 +19,9 @@ export function Sun({ className = 'h-16 w-16', color = 'currentColor' }: { class
 export function Rainbow({ className = 'h-24 w-36' }: { className?: string }) {
   return (
     <svg viewBox="0 0 120 70" className={className} aria-hidden="true" fill="none" strokeLinecap="round">
-      <path d="M10 68a50 50 0 0 1 100 0" stroke="#c2603a" strokeWidth="9" />
-      <path d="M24 68a36 36 0 0 1 72 0" stroke="#dca43c" strokeWidth="9" />
-      <path d="M38 68a22 22 0 0 1 44 0" stroke="#7c8768" strokeWidth="9" />
+      <path d="M10 68a50 50 0 0 1 100 0" stroke="#e2683c" strokeWidth="9" />
+      <path d="M24 68a36 36 0 0 1 72 0" stroke="#f6c453" strokeWidth="9" />
+      <path d="M38 68a22 22 0 0 1 44 0" stroke="#1e4943" strokeWidth="9" />
     </svg>
   )
 }
@@ -31,7 +31,7 @@ export function Flower({ className = 'h-4 w-4', color = 'currentColor' }: { clas
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden="true" fill={color}>
       {[0, 45, 90, 135].map((r) => <ellipse key={r} cx="12" cy="12" rx="2.6" ry="9" transform={`rotate(${r} 12 12)`} opacity=".85" />)}
-      <circle cx="12" cy="12" r="2.6" fill="#f6efe4" />
+      <circle cx="12" cy="12" r="2.6" fill="#fbf5ec" />
     </svg>
   )
 }

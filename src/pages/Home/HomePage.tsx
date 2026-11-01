@@ -39,7 +39,7 @@ export function HomePage() {
       {/* HERO: the owner's photo of DLF Cyber City Building 9A & 9B (set in Admin → Settings) */}
       <section className="relative isolate flex min-h-[100svh] items-end overflow-hidden pb-12 pt-32 sm:items-center sm:pb-20">
         <SmartImage src={settings.heroImageUrl || DEFAULT_HERO} alt={settings.heroImageAlt} eager quietFallback className="absolute inset-0 -z-20 h-full w-full scale-105" />
-        <div className="absolute inset-0 -z-10 bg-gradient-to-b from-night/75 via-night/40 to-night/90" />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-b from-forest-dark/70 via-forest-dark/25 to-forest-dark/85" />
         <div className="pointer-events-none absolute -left-40 top-1/3 -z-10 h-[28rem] w-[28rem] rounded-full bg-coral/25 blur-[130px]" />
         <div className="pointer-events-none absolute -right-20 top-0 -z-10 h-96 w-96 rounded-full bg-marigold/20 blur-[130px]" />
         <Rainbow className="pointer-events-none absolute bottom-0 right-40 -z-10 hidden h-32 w-52 opacity-60 xl:block" />
@@ -48,11 +48,11 @@ export function HomePage() {
             <p className="mb-5 inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-sand ring-1 ring-white/20 backdrop-blur">
               <MapPin className="h-3.5 w-3.5" /> {CITY}<span className="hidden sm:inline"> · Whole homes to gather & stay</span>
             </p>
-            <h1 className="font-display text-[50px] font-semibold leading-[0.95] text-ivory sm:text-7xl lg:text-[92px]" aria-label="The whole place. Your people. Your weekend.">
+            <h1 className="font-display text-[42px] font-semibold leading-[0.98] text-ivory sm:text-7xl lg:text-[88px]" aria-label="The whole place. Your people. Your weekend.">
               <span aria-hidden="true">The whole place.<br />Your people.<br /><RotatingWord words={HERO_WORDS} /></span>
             </h1>
             <span className="absolute -top-4 right-0 hidden animate-wiggle items-center gap-2 rounded-full bg-marigold px-5 py-2 font-hand text-2xl font-bold text-ink shadow-lift lg:flex">
-              <Flower className="h-5 w-5" color="#c2603a" /> no reception, no strangers
+              <Flower className="h-5 w-5" color="#e2683c" /> no reception, no strangers
             </span>
             <Sun className="pointer-events-none absolute -right-4 top-24 hidden h-28 w-28 text-marigold/70 lg:block" />
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-ivory/85">
@@ -154,7 +154,7 @@ function PlanTiles() {
           return (
             <Link key={o.occasion} to={`/stays?plan=${encodeURIComponent(o.occasion)}`} className={classNames('group relative block overflow-hidden', i === 0 ? 'col-span-2 rounded-[2rem] lg:row-span-2 lg:arch' : 'arch')}>
               <SmartImage src={o.image} alt="" className={classNames('w-full transition duration-700 group-hover:scale-105', i === 0 ? 'aspect-[4/3] lg:aspect-auto lg:h-full' : 'aspect-[4/5]')} />
-              <div className="absolute inset-0 bg-gradient-to-t from-night/90 via-night/25 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-forest-dark/85 via-forest-dark/20 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-4 text-ivory sm:p-6">
                 <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-full bg-marigold text-ink shadow-lift transition group-hover:-rotate-12 sm:h-10 sm:w-10">
                   <OccasionIcon name={o.occasion} className="h-[18px] w-[18px]" />
@@ -262,7 +262,7 @@ function Neighbourhoods() {
           return (
             <Link key={n.name} to={`/stays?where=${encodeURIComponent(n.query)}`} className="arch group relative block overflow-hidden">
               <SmartImage src={n.image} alt={`${n.name}, ${CITY}`} className="aspect-[4/5] w-full transition duration-700 group-hover:scale-105" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#141b16]/85 via-[#141b16]/20 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-forest-dark/85 via-forest-dark/15 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-6 text-ivory">
                 <div className="flex items-center justify-between gap-3">
                   <h3 className="font-display text-3xl font-semibold">{n.name}</h3>
