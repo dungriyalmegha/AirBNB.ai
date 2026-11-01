@@ -2,12 +2,12 @@ import type { Settings } from '../types'
 import { DEFAULT_HERO, DEFAULT_HERO_ALT } from './gurgaon'
 
 export const defaultSettings: Settings = {
-  businessName: 'Willow & Stone Stays',
+  businessName: 'Thikana',
   logoUrl: '',
-  tagline: 'Thoughtfully curated stays in Gurgaon, close to Cyber City.',
+  tagline: 'Thikana (ठिकाना): a place to call home. Thoughtfully curated stays in Gurgaon, close to Cyber City.',
   // Placeholder number — change it in Admin → Settings before going live.
   whatsappNumber: '919999999999',
-  contactEmail: 'hello@willowandstone.example',
+  contactEmail: 'hello@thikana.example',
   contactPhone: '+91 99999 99999',
   address: 'Gurgaon, Haryana',
   social: { instagram: 'https://instagram.com/', facebook: 'https://facebook.com/', youtube: '', x: '' },

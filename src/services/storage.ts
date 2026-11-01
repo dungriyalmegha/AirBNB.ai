@@ -5,7 +5,7 @@
 // but it is not shared between devices or users and is not secure storage.
 
 // Bumping the version reseeds sample data in browsers that saw an older version.
-const NAMESPACE = 'wss:v3:'
+const NAMESPACE = 'wss:v4:'
 
 export const storage = {
   read<T>(key: string, fallback: T): T {

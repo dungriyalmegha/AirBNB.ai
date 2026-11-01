@@ -1,4 +1,5 @@
-import { Info, LockKeyhole } from 'lucide-react'
+import { Info } from 'lucide-react'
+import { ThikanaMark } from '../../components/Logo'
 import { useState, type FormEvent } from 'react'
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { Button } from '../../components/ui/Button'
@@ -44,7 +45,7 @@ export function AdminLogin() {
       </div>
       <div className="flex items-center justify-center bg-ivory px-5 py-12">
         <div className="w-full max-w-sm">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-forest text-ivory"><LockKeyhole className="h-5 w-5" /></div>
+          <ThikanaMark className="h-14 w-12" />
           <h1 className="mt-6 font-display text-4xl font-semibold text-forest">Welcome back</h1>
           <p className="mt-1 text-sm text-muted">Sign in to manage properties, enquiries and bookings.</p>
 

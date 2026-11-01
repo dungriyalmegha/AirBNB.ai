@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext'
 import { useData } from '../context/DataContext'
 import { classNames } from '../utils/format'
 import { PageLoader } from './PublicLayout'
+import { ThikanaMark } from '../components/Logo'
 
 export function RequireAuth({ children }: { children: ReactNode }) {
   const { user } = useAuth()
@@ -34,7 +35,10 @@ export function AdminLayout() {
   const sidebar = (
     <div className="flex h-full flex-col">
       <div className="px-6 py-6">
-        <div className="font-display text-2xl font-semibold leading-tight text-ivory">{settings.businessName}</div>
+        <div className="flex items-center gap-2.5">
+          <ThikanaMark color="#F7F4EE" className="h-8 w-[27px]" />
+          <div className="font-display text-2xl font-semibold leading-tight text-ivory">{settings.businessName}</div>
+        </div>
         <div className="mt-1 text-xs uppercase tracking-[0.2em] text-ivory/50">Owner dashboard</div>
       </div>
       <nav className="flex-1 space-y-1 px-3" aria-label="Admin">
