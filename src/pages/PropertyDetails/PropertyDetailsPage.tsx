@@ -1,4 +1,5 @@
-import { BedDouble, ChevronRight, Clock, DoorOpen, Home, KeyRound, Landmark, MapPin, PartyPopper, ScrollText, Share2, Sparkles } from 'lucide-react'
+import { BedDouble, ChevronRight, Clock, DoorOpen, Home, KeyRound, Landmark, MapPin, ScrollText, Share2, Sparkles, UsersRound } from 'lucide-react'
+import { occasionLabel } from '../../data/occasions'
 import { useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { AmenityIcon } from '../../components/AmenityIcon'
@@ -110,7 +111,7 @@ function PropertyDetails({ slug }: { slug: string }) {
               <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
                 {[
                   { Icon: KeyRound, label: 'Whole place' },
-                  { Icon: PartyPopper, label: `Up to ${property.partyCapacity} people` },
+                  { Icon: UsersRound, label: `Up to ${property.partyCapacity} people` },
                   { Icon: BedDouble, label: `Sleeps ${property.maxGuests}` },
                   { Icon: DoorOpen, label: `${property.bedrooms} bedroom${property.bedrooms === 1 ? '' : 's'}` },
                 ].map(({ Icon, label }) => (
@@ -126,7 +127,7 @@ function PropertyDetails({ slug }: { slug: string }) {
                     {property.occasions.map((o) => (
                       <li key={o}>
                         <button type="button" onClick={() => setStay({ ...stay, occasion: o })} aria-pressed={stay.occasion === o} className={classNames('flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold ring-1 transition', stay.occasion === o ? 'bg-forest text-ivory ring-forest' : 'bg-white text-ink ring-line hover:ring-forest/40')}>
-                          <OccasionIcon name={o} className="h-4 w-4 text-accent" /> {o}
+                          <OccasionIcon name={o} className="h-4 w-4 text-accent" /> {occasionLabel(o)}
                         </button>
                       </li>
                     ))}
@@ -186,7 +187,7 @@ function PropertyDetails({ slug }: { slug: string }) {
             {/* Rules & timings */}
             <section className="grid gap-10 border-b border-line py-10 sm:grid-cols-2">
               <div>
-                <h2 className="flex items-center gap-2 font-display text-3xl font-semibold text-forest"><ScrollText className="h-6 w-6 text-olive" /> Party & house rules</h2>
+                <h2 className="flex items-center gap-2 font-display text-3xl font-semibold text-forest"><ScrollText className="h-6 w-6 text-olive" /> House rules</h2>
                 <ul className="mt-5 space-y-3 text-ink/80">
                   {property.houseRules.map((r) => <li key={r} className="flex gap-3"><span className="mt-2.5 h-1 w-1 shrink-0 rounded-full bg-accent" />{r}</li>)}
                 </ul>

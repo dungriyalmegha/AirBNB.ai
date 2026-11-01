@@ -9,7 +9,7 @@ export const PROPERTY_TYPES = ['Studio', 'Apartment', 'Serviced apartment', 'Pen
 export type PropertyType = (typeof PROPERTY_TYPES)[number]
 
 /** What guests rent the whole place for. Drives the homepage tiles, search and filters. */
-export const OCCASIONS = ['House party', 'Birthday', 'Office party', 'Get-together', 'Movie night', 'Date night', 'Staycation'] as const
+export const OCCASIONS = ['Get-together', 'Staycation', 'Movie night', 'Date night', 'Birthday', 'House party', 'Office party'] as const
 export type Occasion = (typeof OCCASIONS)[number]
 
 export interface PropertyImage {
@@ -58,7 +58,7 @@ export interface Property {
   images: PropertyImage[]
   /** What this place is good for. */
   occasions: Occasion[]
-  /** Most people allowed for a party or get-together. */
+  /** Most people allowed for a gathering. */
   partyCapacity: number
   /** Most people who can stay overnight. */
   maxGuests: number

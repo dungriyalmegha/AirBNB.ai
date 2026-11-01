@@ -1,9 +1,9 @@
-import { CalendarDays, MapPin, PartyPopper, Search, Users } from 'lucide-react'
+import { CalendarDays, MapPin, Search, Sparkles, Users } from 'lucide-react'
 import { useMemo, useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { usePublishedProperties } from '../context/DataContext'
 import { stayNear } from '../data/gurgaon'
-import { GROUP_SIZES } from '../data/occasions'
+import { GROUP_SIZES, occasionLabel } from '../data/occasions'
 import { OCCASIONS } from '../types'
 import { addDays, today } from '../utils/dates'
 import { classNames } from '../utils/format'
@@ -91,10 +91,10 @@ export function SearchBar({ initial, variant = 'hero', onSearch }: { initial?: P
           <input type="date" min={v.checkIn ? addDays(v.checkIn, 1) : addDays(today(), 1)} value={v.checkOut} onChange={(e) => setV({ ...v, checkOut: e.target.value })} className={input} aria-label="Check-out date" />
         </label>
         <label className={cell}>
-          <span className={label}><PartyPopper className="h-3.5 w-3.5" /> The plan</span>
+          <span className={label}><Sparkles className="h-3.5 w-3.5" /> The vibe</span>
           <select value={v.plan} onChange={(e) => setV({ ...v, plan: e.target.value })} className={classNames(input, 'cursor-pointer appearance-none')}>
             <option value="">Anything</option>
-            {OCCASIONS.map((o) => <option key={o} value={o}>{o}</option>)}
+            {OCCASIONS.map((o) => <option key={o} value={o}>{occasionLabel(o)}</option>)}
           </select>
         </label>
         <label className={cell}>

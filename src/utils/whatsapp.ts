@@ -1,3 +1,4 @@
+import { occasionLabel } from '../data/occasions'
 // WhatsApp click-to-chat. The browser can only *open* WhatsApp with a
 // prefilled message; the guest still taps send. Silent owner notifications
 // need the WhatsApp Business API on a backend (see services/notificationService).
@@ -26,11 +27,12 @@ export interface EnquiryMessageInput {
 }
 
 export function enquiryMessage(i: EnquiryMessageInput): string {
-  const lines = [`Hi! I’d like to book ${i.propertyName}${i.occasion && i.occasion !== 'Staycation' ? ` for ${/^[aeiou]/i.test(i.occasion) ? 'an' : 'a'} ${i.occasion.toLowerCase()}` : ''}.`]
+  const plan = i.occasion ? occasionLabel(i.occasion) : ''
+  const lines = [`Hi! I’d like to book ${i.propertyName}${plan ? ` for ${/^[aeiou]/i.test(plan) ? 'an' : 'a'} ${plan.toLowerCase()}` : ''}.`]
   if (i.reference) lines.push(`Enquiry ref: ${i.reference}`)
   if (i.name) lines.push(`Name: ${i.name}`)
   if (i.phone) lines.push(`Phone: ${i.phone}`)
-  if (i.occasion) lines.push(`Plan: ${i.occasion}`)
+  if (plan) lines.push(`Plan: ${plan}`)
   if (i.checkIn) lines.push(`Check-in: ${i.checkIn}`)
   if (i.checkOut) lines.push(`Check-out: ${i.checkOut}`)
   if (i.people) lines.push(`People: ${i.people}`)

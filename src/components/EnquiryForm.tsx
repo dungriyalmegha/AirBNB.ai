@@ -1,4 +1,5 @@
 import { CheckCircle2, Clock, Copy, Send } from 'lucide-react'
+import { occasionLabel } from '../data/occasions'
 import { useEffect, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { useData, usePublishedProperties } from '../context/DataContext'
@@ -129,7 +130,7 @@ export function EnquiryForm({
         <dl className="mt-6 grid grid-cols-2 gap-4 rounded-2xl bg-ivory p-5 text-sm sm:grid-cols-4">
           <div><dt className="text-xs text-muted">Reference</dt><dd className="mt-1 font-semibold">{done.reference}</dd></div>
           <div><dt className="text-xs text-muted">Dates</dt><dd className="mt-1 font-semibold">{formatDate(done.checkIn, { day: 'numeric', month: 'short' })} – {formatDate(done.checkOut, { day: 'numeric', month: 'short' })}</dd></div>
-          <div><dt className="text-xs text-muted">Plan</dt><dd className="mt-1 font-semibold">{done.occasion} · {done.groupSize} people</dd></div>
+          <div><dt className="text-xs text-muted">Plan</dt><dd className="mt-1 font-semibold">{occasionLabel(done.occasion)} · {done.groupSize} people</dd></div>
           <div><dt className="text-xs text-muted">Estimate</dt><dd className="mt-1 font-semibold">{done.estimatedTotal ? money(done.estimatedTotal) : '—'}</dd></div>
         </dl>
         <p className="mt-4 flex items-center gap-2 text-sm text-[#8a5a14]"><Clock className="h-4 w-4" /> Status: pending owner confirmation</p>
@@ -193,16 +194,16 @@ export function EnquiryForm({
 
         <SelectField id="occasion" label="What’s the plan?" value={stay.occasion} error={errors.occasion} onChange={(e) => setStay({ ...stay, occasion: e.target.value })}>
           <option value="">Choose one…</option>
-          {planOptions(property).map((o) => <option key={o} value={o}>{o}</option>)}
+          {planOptions(property).map((o) => <option key={o} value={o}>{occasionLabel(o)}</option>)}
         </SelectField>
         <TextField
           id="people" label="How many people?" type="number" inputMode="numeric" min={1} max={property?.partyCapacity}
           value={stay.people || ''} error={errors.people}
-          hint={property ? `Up to ${property.partyCapacity} for a party · sleeps ${property.maxGuests}` : 'Rough headcount is fine'}
+          hint={property ? `Up to ${property.partyCapacity} for a gathering · sleeps ${property.maxGuests}` : 'Rough headcount is fine'}
           onChange={(e) => setStay({ ...stay, people: Math.max(0, Math.round(Number(e.target.value) || 0)) })}
         />
 
-        <TextArea id="specialRequests" label={<>Special requests <span className="font-normal normal-case tracking-normal text-muted">(optional)</span></>} value={c.specialRequests} onChange={set('specialRequests')} placeholder="Tell us about the party: decor, cake, music, arrival time…" className="sm:col-span-2" maxLength={1000} />
+        <TextArea id="specialRequests" label={<>Special requests <span className="font-normal normal-case tracking-normal text-muted">(optional)</span></>} value={c.specialRequests} onChange={set('specialRequests')} placeholder="Tell us about the plan: decor, cake, music, arrival time…" className="sm:col-span-2" maxLength={1000} />
       </div>
 
       {quote && quoteState.issues.length === 0 && (

@@ -4,7 +4,7 @@ import { DEFAULT_HERO, DEFAULT_HERO_ALT } from './gurgaon'
 export const defaultSettings: Settings = {
   businessName: 'Thikana',
   logoUrl: '',
-  tagline: 'Thikana (ठिकाना): a place to call home. Rent a whole flat in Gurgaon for parties, get-togethers and stays.',
+  tagline: 'Thikana (ठिकाना): a place to call home. Whole homes in Gurgaon for slow weekends, get-togethers and the occasional celebration.',
   // Placeholder number — change it in Admin → Settings before going live.
   whatsappNumber: '919999999999',
   contactEmail: 'hello@thikana.example',

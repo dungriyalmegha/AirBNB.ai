@@ -1,4 +1,5 @@
 import { AlertCircle, ExternalLink, ShieldCheck } from 'lucide-react'
+import { occasionLabel } from '../data/occasions'
 import { useData } from '../context/DataContext'
 import { useMoney } from '../hooks/useMoney'
 import { useWhatsApp } from '../hooks/useWhatsApp'
@@ -106,7 +107,7 @@ export function BookingWidget({ property, stay, onChange, onEnquire }: { propert
           <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-ink/70">What’s the plan?</span>
           <select value={stay.occasion} onChange={(e) => onChange({ ...stay, occasion: e.target.value })} className="mt-0.5 block w-full cursor-pointer bg-transparent text-sm font-medium outline-none" aria-label="What’s the plan?">
             <option value="">Choose one…</option>
-            {planOptions(property).map((o) => <option key={o} value={o}>{o}</option>)}
+            {planOptions(property).map((o) => <option key={o} value={o}>{occasionLabel(o)}</option>)}
           </select>
         </label>
         <div className="border-t border-line px-4">

@@ -1,4 +1,5 @@
 import { ArrowDown, ArrowLeft, ArrowUp, ImagePlus, Link2, Plus, Save, Star, Trash2, Upload, X } from 'lucide-react'
+import { occasionLabel } from '../../data/occasions'
 import { useRef, useState, type FormEvent, type ReactNode } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { PageHeader, Panel } from '../../components/admin/AdminUI'
@@ -151,7 +152,7 @@ function Editor({ existing, initial, save }: { existing?: Property; initial: Pro
                 return (
                   <button key={o} type="button" aria-pressed={on} onClick={() => set('occasions', on ? f.occasions.filter((x) => x !== o) : [...f.occasions, o])}
                     className={classNames('rounded-full px-4 py-2 text-sm font-semibold ring-1 transition', on ? 'bg-forest text-ivory ring-forest' : 'bg-white text-ink/70 ring-line hover:ring-forest/40')}>
-                    {o}
+                    {occasionLabel(o)}
                   </button>
                 )
               })}

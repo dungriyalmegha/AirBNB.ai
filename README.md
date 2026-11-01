@@ -1,4 +1,4 @@
-# Thikana: whole flats for parties and stays in Gurgaon
+# Thikana: whole homes to gather and stay in Gurgaon
 
 An owner-run site for a few Gurgaon flats that guests rent **whole**: for house parties, birthdays, office nights, get-togethers, movie or date nights, or a plain staycation. It is deliberately not a hotel-booking app: there are no rooms or adult/child counts, just the plan and how many people are coming. Public website plus a separate owner dashboard at `/admin`.
 Built with React, TypeScript, Tailwind CSS v4, React Router and Lucide icons on Vite.

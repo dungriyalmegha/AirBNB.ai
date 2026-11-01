@@ -10,13 +10,13 @@ export interface OccasionInfo {
 }
 
 export const occasionInfo: OccasionInfo[] = [
-  { occasion: 'House party', title: 'House party', line: 'Music, lights and the whole place to yourselves.', image: unsplash('1545128485-c400e7702796', 900) },
-  { occasion: 'Birthday', title: 'Birthday bash', line: 'Balloons up, cake out, friends stay over.', image: unsplash('1741969494307-55394e3e4071', 900) },
-  { occasion: 'Office party', title: 'Office party', line: 'Team nights, farewells and launch parties.', image: unsplash('1758520144658-c87be518b87e', 900) },
-  { occasion: 'Get-together', title: 'Get-together', line: 'Reunions, potlucks and long dinners.', image: unsplash('1527529482837-4698179dc6ce', 900) },
+  { occasion: 'Get-together', title: 'Get-together', line: 'Long dinners, reunions and slow conversations that run late.', image: unsplash('1527529482837-4698179dc6ce', 900) },
+  { occasion: 'Staycation', title: 'Slow weekend', line: 'No plans, no crowd. Just a home that’s yours.', image: unsplash('1560448075-57d0285fc59b', 900) },
   { occasion: 'Movie night', title: 'Movie night', line: 'Projector, big sofa, zero interruptions.', image: unsplash('1663811397219-c572550dffc5', 900) },
   { occasion: 'Date night', title: 'Date night', line: 'Candles, city lights and some privacy.', image: unsplash('1513279922550-250c2129b13a', 900) },
-  { occasion: 'Staycation', title: 'Staycation', line: 'Just need a break? Stay the weekend.', image: unsplash('1560448075-57d0285fc59b', 900) },
+  { occasion: 'Birthday', title: 'Birthday', line: 'Cake, close friends, and nobody has to leave early.', image: unsplash('1741969494307-55394e3e4071', 900) },
+  { occasion: 'House party', title: 'House party', line: 'Good music, good people, the place to yourselves.', image: unsplash('1545128485-c400e7702796', 900) },
+  { occasion: 'Office party', title: 'Team night', line: 'Offsites, farewells and team dinners.', image: unsplash('1758520144658-c87be518b87e', 900) },
 ]
 
 export const occasionLabel = (o: string) => occasionInfo.find((x) => x.occasion === o)?.title ?? o

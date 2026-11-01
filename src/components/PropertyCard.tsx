@@ -1,4 +1,5 @@
-import { BedDouble, ChevronLeft, ChevronRight, ExternalLink, Heart, KeyRound, MapPin, PartyPopper } from 'lucide-react'
+import { BedDouble, ChevronLeft, ChevronRight, ExternalLink, Heart, KeyRound, MapPin, UsersRound } from 'lucide-react'
+import { occasionLabel } from '../data/occasions'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useData } from '../context/DataContext'
@@ -47,7 +48,7 @@ export function PropertyCard({ property, showDescription, query = '' }: { proper
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/35 via-transparent to-transparent" />
         <div className="absolute left-4 top-4 flex flex-wrap gap-2 pr-14">
           <Badge className="bg-white/95 shadow-sm"><KeyRound className="h-3 w-3" /> Whole place</Badge>
-          {property.featured && <Badge className="!bg-marigold !text-ink shadow-sm">Party favourite</Badge>}
+          {property.featured && <Badge className="!bg-marigold !text-ink shadow-sm">Featured</Badge>}
           {property.airbnbUrl && <Badge className="bg-[#ff385c] !text-white shadow-sm">Also on Airbnb</Badge>}
         </div>
         <button
@@ -95,14 +96,14 @@ export function PropertyCard({ property, showDescription, query = '' }: { proper
         {showDescription && <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-ink/70">{property.shortDescription}</p>}
 
         <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-ink/75">
-          <span className="flex items-center gap-1.5"><PartyPopper className="h-4 w-4 text-accent" /> Up to {property.partyCapacity} people</span>
+          <span className="flex items-center gap-1.5"><UsersRound className="h-4 w-4 text-accent" /> Up to {property.partyCapacity} people</span>
           <span className="flex items-center gap-1.5"><BedDouble className="h-4 w-4 text-olive" /> Sleeps {property.maxGuests}</span>
         </div>
 
         {property.occasions.length > 0 && (
           <ul className="mt-3 flex flex-wrap gap-1.5" aria-label="Good for">
             {property.occasions.slice(0, 4).map((o) => (
-              <li key={o} className="flex items-center gap-1 rounded-full bg-sand/60 px-2.5 py-1 text-[11px] font-semibold text-forest"><OccasionIcon name={o} className="h-3 w-3 text-accent-dark" />{o}</li>
+              <li key={o} className="flex items-center gap-1 rounded-full bg-sand/60 px-2.5 py-1 text-[11px] font-semibold text-forest"><OccasionIcon name={o} className="h-3 w-3 text-accent-dark" />{occasionLabel(o)}</li>
             ))}
           </ul>
         )}

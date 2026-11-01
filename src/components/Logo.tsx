@@ -25,7 +25,7 @@ export function Logo({ light, className }: { light?: boolean; className?: string
         <span className={classNames('font-display text-[26px] font-semibold leading-none tracking-tight', light ? 'text-ivory' : 'text-forest')}>
           {settings.businessName}
         </span>
-        <span className={classNames('mt-0.5 text-[9px] font-bold uppercase tracking-[0.3em]', light ? 'text-sand' : 'text-olive')}>Party flats · Gurgaon</span>
+        <span className={classNames('mt-0.5 text-[9px] font-bold uppercase tracking-[0.3em]', light ? 'text-sand' : 'text-olive')}>Whole homes · Gurgaon</span>
       </span>
     </Link>
   )

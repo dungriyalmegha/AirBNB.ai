@@ -45,12 +45,12 @@ export const neighbourhoods: Neighbourhood[] = [
 ]
 
 export const stayNear = [
-  { label: 'Party places near Cyber Hub', where: 'Cyber Hub' },
+  { label: 'Places near Cyber Hub', where: 'Cyber Hub' },
   { label: 'Places near DLF Cyber City', where: 'Cyber City' },
   { label: 'Places near Building 9A & 9B', where: '9A' },
-  { label: 'Party places on Golf Course Road', where: 'Golf Course Road' },
+  { label: 'Places on Golf Course Road', where: 'Golf Course Road' },
   { label: 'Places near Galleria Market', where: 'Galleria' },
-  { label: 'Party places in Sector 29', where: 'Sector 29' },
+  { label: 'Places in Sector 29', where: 'Sector 29' },
   { label: 'Places near Leisure Valley Park', where: 'Leisure Valley' },
   { label: 'Places near Ambience Mall', where: 'Ambience' },
   { label: 'Places near IGI Airport', where: 'Airport' },
@@ -61,13 +61,13 @@ export const partyRules = [
   { title: 'The whole place is yours', body: 'No reception, no shared rooms, no strangers. Just your group.' },
   { title: 'Be kind to the neighbours', body: 'Music at a sensible volume after 10 pm, as most Gurgaon societies require.' },
   { title: 'One grown-up in charge', body: 'The person booking must be 18+ and share a photo ID.' },
-  { title: 'Refundable deposit', body: 'A small security deposit for parties, returned after checkout.' },
+  { title: 'Refundable deposit', body: 'A small security deposit for bigger gatherings, returned after checkout.' },
 ]
 
 export const faqs = [
   {
-    q: 'Can we really throw a party here?',
-    a: 'Yes, that’s the point. You book the whole place, and each listing shows how many people it fits for a party and how many can stay overnight. Just keep the music sensible after 10 pm.',
+    q: 'Can we have friends over, or celebrate something?',
+    a: 'Yes. You book the whole place, and each listing shows how many people it fits for a gathering and how many can stay overnight. Just keep the music sensible after 10 pm.',
   },
   {
     q: 'Do I pay per person or for the whole place?',
@@ -75,7 +75,7 @@ export const faqs = [
   },
   {
     q: 'Is there a security deposit?',
-    a: 'For parties, yes: a refundable deposit that we return after checkout once everything’s in order. We’ll share the amount when we confirm your booking.',
+    a: 'For bigger gatherings, yes: a refundable deposit that we return after checkout once everything’s in order. We’ll share the amount when we confirm your booking.',
   },
   {
     q: 'Can you help with decor, a cake or food?',

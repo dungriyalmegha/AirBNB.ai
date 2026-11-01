@@ -9,7 +9,7 @@ import { EmptyState } from '../../components/ui/EmptyState'
 import { useData, usePublishedProperties } from '../../context/DataContext'
 import { useDocumentTitle } from '../../hooks/useDocumentTitle'
 import { useMoney } from '../../hooks/useMoney'
-import { GROUP_SIZES } from '../../data/occasions'
+import { GROUP_SIZES, occasionLabel } from '../../data/occasions'
 import { OccasionIcon } from '../../components/OccasionIcon'
 import { OCCASIONS, type Occasion, type PropertyType } from '../../types'
 import { checkRange } from '../../utils/availability'
@@ -79,7 +79,7 @@ export function PropertiesPage() {
     <div className="pt-28">
       <section className="container-page">
         <p className="eyebrow mb-3">Find a place</p>
-        <h1 className="font-display text-5xl font-semibold leading-none text-forest sm:text-6xl">{plan && plan !== 'Staycation' ? <>Places for your <em className="font-medium text-olive">{plan.toLowerCase()}</em></> : <>Whole places in Gurgaon</>}</h1>
+        <h1 className="font-display text-5xl font-semibold leading-none text-forest sm:text-6xl">{plan ? <>Homes for a <em className="font-medium text-olive">{occasionLabel(plan).toLowerCase()}</em></> : <>Whole places in Gurgaon</>}</h1>
         <p className="mt-4 max-w-xl text-ink/70">Every place is rented out whole: no reception, no strangers, just your group. Check your date, then book on Airbnb or message us.</p>
         <div className="mt-8">
           <SearchBar
@@ -99,7 +99,7 @@ export function PropertiesPage() {
             </Button>
             <div className="no-scrollbar flex gap-2 overflow-x-auto">
               <Chip active={!plan} onClick={() => update({ plan: '' })}>Any plan</Chip>
-              {OCCASIONS.map((o) => <Chip key={o} active={plan === o} onClick={() => update({ plan: o })}><OccasionIcon name={o} className={classNames('h-4 w-4', plan === o ? 'text-sand' : 'text-accent')} />{o}</Chip>)}
+              {OCCASIONS.map((o) => <Chip key={o} active={plan === o} onClick={() => update({ plan: o })}><OccasionIcon name={o} className={classNames('h-4 w-4', plan === o ? 'text-sand' : 'text-accent')} />{occasionLabel(o)}</Chip>)}
             </div>
           </div>
           <label className="flex items-center gap-2 text-sm text-ink/70">

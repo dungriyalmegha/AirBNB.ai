@@ -1,4 +1,4 @@
-import { ArrowRight, Briefcase, Cake, CalendarCheck, ChevronDown, KeyRound, MapPin, MessageCircle, Quote, Search } from 'lucide-react'
+import { ArrowRight, BedDouble, Cake, CalendarCheck, ChevronDown, KeyRound, MapPin, MessageCircle, Quote, Search } from 'lucide-react'
 import { Fragment, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Flower, Rainbow, Sun, Wave } from '../../components/Boho'
@@ -25,7 +25,7 @@ import { classNames } from '../../utils/format'
 const SM_SPAN: Record<number, string> = { 1: 'sm:col-span-1', 2: 'sm:col-span-2' }
 const LG_SPAN: Record<number, string> = { 1: 'lg:col-span-1', 2: 'lg:col-span-2', 3: 'lg:col-span-3' }
 
-const HERO_WORDS = ['Your party.', 'Your birthday.', 'Your movie night.', 'Your team night.', 'Your weekend.']
+const HERO_WORDS = ['Your weekend.', 'Your get-together.', 'Your movie night.', 'Your slow Sunday.', 'Your celebration.']
 
 export function HomePage() {
   useDocumentTitle()
@@ -46,9 +46,9 @@ export function HomePage() {
         <div className="container-page">
           <div className="relative max-w-4xl animate-fade-up">
             <p className="mb-5 inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-sand ring-1 ring-white/20 backdrop-blur">
-              <MapPin className="h-3.5 w-3.5" /> {CITY}<span className="hidden sm:inline"> · Whole flats for parties & stays</span>
+              <MapPin className="h-3.5 w-3.5" /> {CITY}<span className="hidden sm:inline"> · Whole homes to gather & stay</span>
             </p>
-            <h1 className="font-display text-[50px] font-semibold leading-[0.95] text-ivory sm:text-7xl lg:text-[92px]" aria-label="The whole place. Your people. Your party.">
+            <h1 className="font-display text-[50px] font-semibold leading-[0.95] text-ivory sm:text-7xl lg:text-[92px]" aria-label="The whole place. Your people. Your weekend.">
               <span aria-hidden="true">The whole place.<br />Your people.<br /><RotatingWord words={HERO_WORDS} /></span>
             </h1>
             <span className="absolute -top-4 right-0 hidden animate-wiggle items-center gap-2 rounded-full bg-marigold px-5 py-2 font-hand text-2xl font-bold text-ink shadow-lift lg:flex">
@@ -56,7 +56,7 @@ export function HomePage() {
             </span>
             <Sun className="pointer-events-none absolute -right-4 top-24 hidden h-28 w-28 text-marigold/70 lg:block" />
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-ivory/85">
-              Rent an entire flat in {CITY} for a birthday, a house party, an office night out or just a weekend away. Bring your crew. It’s all yours.
+              Rent an entire home in {CITY}, just for you and your people. Slow weekends, long dinners, movie nights, the odd celebration. It’s all yours.
             </p>
           </div>
           <div className="mt-10 max-w-6xl animate-fade-up [animation-delay:150ms]">
@@ -119,7 +119,7 @@ function RotatingWord({ words }: { words: string[] }) {
 }
 
 function OccasionMarquee() {
-  const items = [...occasionInfo.map((o) => o.title), 'Farewells', 'Reunions', 'Bachelor nights', 'Match nights', 'Anniversaries']
+  const items = ['Slow weekends', 'Long dinners', 'Movie nights', 'Lazy Sundays', 'Get-togethers', 'Date nights', 'Reunions', 'Birthdays', 'Sunset chai']
   const row = (hidden?: boolean) => (
     <ul className="flex shrink-0 items-center" aria-hidden={hidden}>
       {items.map((t) => (
@@ -144,9 +144,9 @@ function PlanTiles() {
   return (
     <section className="container-page py-24">
       <SectionHeading
-        eyebrow="Pick your plan"
-        title={<>What are we <em className="font-medium text-olive">celebrating?</em></>}
-        intro="Tell us the occasion and we’ll show you the places that suit it, from a quiet date night to a 40-person terrace party."
+        eyebrow="Pick your vibe"
+        title={<>What’s the <em className="font-medium text-olive">mood?</em></>}
+        intro="From a quiet date night to a big get-together on a terrace, tell us the mood and we’ll show you the homes that suit it."
       />
       <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
         {occasionInfo.map((o, i) => {
@@ -174,7 +174,7 @@ function PlanTiles() {
           <div className="block-print pointer-events-none absolute inset-0 opacity-25" />
           <Sun className="absolute right-6 top-5 h-16 w-16 text-marigold transition duration-700 group-hover:rotate-45" />
           <p className="mb-1 font-hand text-2xl font-bold text-ivory/90">something else?</p>
-          <h3 className="font-display text-3xl font-semibold leading-tight sm:text-4xl">Anniversary, bachelor night, match screening…</h3>
+          <h3 className="font-display text-3xl font-semibold leading-tight sm:text-4xl">Anniversary, a reading retreat, a match screening…</h3>
           <p className="mt-3 flex items-center gap-2 text-sm font-semibold"><WhatsAppIcon className="h-4 w-4" /> Tell us the plan on WhatsApp <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" /></p>
         </a>
       </div>
@@ -189,18 +189,18 @@ function PromoCard({ kind, className }: { kind: 'office' | 'extras'; className?:
     <aside className={classNames('relative flex min-h-[340px] flex-col justify-end overflow-hidden rounded-3xl p-7', office ? 'bg-night text-ivory' : 'bg-clay text-ink', className)}>
       {office ? <div className="block-print pointer-events-none absolute inset-0 opacity-[0.14]" /> : <Rainbow className="pointer-events-none absolute -right-4 top-6 h-24 w-36 opacity-80" />}
       <div className={classNames('absolute left-7 top-7 flex h-12 w-12 items-center justify-center rounded-full', office ? 'bg-ivory/10' : 'bg-white/60')}>
-        {office ? <Briefcase className="h-5 w-5" /> : <Cake className="h-5 w-5" />}
+        {office ? <BedDouble className="h-5 w-5" /> : <Cake className="h-5 w-5" />}
       </div>
-      <p className={classNames('eyebrow mb-3', office ? '!text-marigold' : '!text-ink/70')}>{office ? 'Team night?' : 'Make it special'}</p>
-      <h3 className="font-display text-3xl font-semibold leading-tight">{office ? 'Office parties, minus the office' : 'Need decor, a cake or food?'}</h3>
+      <p className={classNames('eyebrow mb-3', office ? '!text-marigold' : '!text-ink/70')}>{office ? 'Need a break?' : 'Make it special'}</p>
+      <h3 className="font-display text-3xl font-semibold leading-tight">{office ? 'A weekend that’s all yours' : 'Flowers, a cake or dinner?'}</h3>
       <p className={classNames('mt-3 text-sm leading-relaxed', office ? 'text-ivory/75' : 'text-ink/75')}>
-        {office ? 'Farewells, offsites and launch parties a short cab ride from Cyber City, with room for the whole team.' : 'Tell us the plan on WhatsApp and we’ll try to help with balloons, decor, a cake or a good caterer nearby.'}
+        {office ? 'No plans, no crowd. Cook, nap, read on the balcony and watch the city lights come on.' : 'Tell us what you’re planning on WhatsApp and we’ll try to help with flowers, a cake or a good caterer nearby.'}
       </p>
       <div className="mt-6">
         {office ? (
-          <ButtonLink to="/stays?plan=Office%20party" variant="light" size="sm" iconRight={<ArrowRight className="h-4 w-4" />}>Places for office parties</ButtonLink>
+          <ButtonLink to="/stays?plan=Staycation" variant="light" size="sm" iconRight={<ArrowRight className="h-4 w-4" />}>Homes for a slow weekend</ButtonLink>
         ) : (
-          <ButtonA href={wa('Hi! I’m planning a party. Can you help with decor, a cake or food?')} target="_blank" rel="noopener noreferrer" variant="primary" size="sm" icon={<WhatsAppIcon className="h-4 w-4" />}>Ask on WhatsApp</ButtonA>
+          <ButtonA href={wa('Hi! I’m planning something special. Can you help with flowers, a cake or food?')} target="_blank" rel="noopener noreferrer" variant="primary" size="sm" icon={<WhatsAppIcon className="h-4 w-4" />}>Ask on WhatsApp</ButtonA>
         )}
       </div>
     </aside>
@@ -211,7 +211,7 @@ function HowItWorks() {
   const steps = [
     { Icon: Search, title: 'Pick a place and a date', body: 'Filter by your plan and group size, then check the calendar. Prices are for the whole place.' },
     { Icon: MessageCircle, title: 'Tell us the plan', body: 'Book on Airbnb or send us the details. We confirm the date, the price and the deposit with you.' },
-    { Icon: KeyRound, title: 'Get the keys', body: 'The whole place is yours. Party, crash, and check out by 11 the next morning.' },
+    { Icon: KeyRound, title: 'Get the keys', body: 'The whole place is yours. Settle in, make it home, and check out by 11 the next morning.' },
   ]
   return (
     <section className="relative">

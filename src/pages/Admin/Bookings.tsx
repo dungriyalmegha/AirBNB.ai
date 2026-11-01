@@ -1,4 +1,5 @@
 import { Ban, Calculator, CheckCircle2, Flag, NotebookTabs, Pencil, Plus, RotateCcw, Search } from 'lucide-react'
+import { occasionLabel } from '../../data/occasions'
 import { useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { BookingStatusBadge, FilterTabs, PageHeader, bookingStatusMeta } from '../../components/admin/AdminUI'
@@ -225,7 +226,7 @@ function BookingFormModal({ booking, onClose, onSaved }: { booking?: Booking; on
         <TextField id="b-out" label="Check-out" type="date" min={f.checkIn ? addDays(f.checkIn, 1) : undefined} value={f.checkOut} error={errors.checkOut} onChange={(e) => setF({ ...f, checkOut: e.target.value, priceLines: [] })} />
         <SelectField id="b-occasion" label="Plan" value={f.occasion} onChange={(e) => setF({ ...f, occasion: e.target.value })}>
           <option value="">Not specified</option>
-          {OCCASIONS.map((o) => <option key={o} value={o}>{o}</option>)}
+          {OCCASIONS.map((o) => <option key={o} value={o}>{occasionLabel(o)}</option>)}
         </SelectField>
         <TextField id="b-people" label="People" type="number" min={1} value={f.groupSize} error={errors.groupSize} onChange={(e) => setF({ ...f, groupSize: Math.max(1, n(e.target.value)), priceLines: [] })} />
         <SelectField id="b-status" label="Status" value={f.status} onChange={(e) => setF({ ...f, status: e.target.value as BookingStatus })}>
