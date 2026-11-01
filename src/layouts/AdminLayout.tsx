@@ -36,7 +36,7 @@ export function AdminLayout() {
     <div className="flex h-full flex-col">
       <div className="px-6 py-6">
         <div className="flex items-center gap-2.5">
-          <ThikanaMark className="h-8 w-[27px]" />
+          <ThikanaMark className="h-8 w-[29px]" />
           <div className="font-display text-2xl font-semibold leading-tight text-ivory">{settings.businessName}</div>
         </div>
         <div className="mt-1 text-xs uppercase tracking-[0.2em] text-ivory/50">Owner dashboard</div>

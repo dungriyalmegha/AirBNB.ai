@@ -20,7 +20,7 @@ export function Rainbow({ className = 'h-24 w-36' }: { className?: string }) {
   return (
     <svg viewBox="0 0 120 70" className={className} aria-hidden="true" fill="none" strokeLinecap="round">
       <path d="M10 68a50 50 0 0 1 100 0" stroke="#e2683c" strokeWidth="9" />
-      <path d="M24 68a36 36 0 0 1 72 0" stroke="#f6c453" strokeWidth="9" />
+      <path d="M24 68a36 36 0 0 1 72 0" stroke="#f0a535" strokeWidth="9" />
       <path d="M38 68a22 22 0 0 1 44 0" stroke="#1e4943" strokeWidth="9" />
     </svg>
   )
