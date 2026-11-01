@@ -16,7 +16,7 @@ export function AboutPage() {
           <p className="eyebrow mb-3">About us</p>
           <h1 className="font-display text-5xl font-semibold leading-[1.02] text-forest sm:text-6xl">A few Gurgaon flats, made for good nights</h1>
           <div className="mt-6 space-y-4 leading-relaxed text-ink/75">
-            <p>{settings.businessName} is a small, owner-run collection of {count} place{count === 1 ? '' : 's'} in Gurgaon. We turned our flats into spaces you rent whole: for a slow weekend, a long dinner with friends, a movie night or a birthday. No reception desk, no shared corridors, no strangers.</p>
+            <p>{settings.businessName} is a small, owner-run collection of {count} place{count === 1 ? '' : 's'} in Gurgaon. We turned our flats into spaces you rent whole: for a slow weekend, a long dinner with friends, a movie night or a birthday.</p>
             <p>We’re not a marketplace and not a hotel. Every place is one we look after ourselves, so you get honest photos, clear prices and a real person on WhatsApp who can help with decor, a cake or where to get good food at 2 am.</p>
             <p className="text-sm text-muted">(Edit this story to tell guests about yourself, your homes and why you started.)</p>
           </div>

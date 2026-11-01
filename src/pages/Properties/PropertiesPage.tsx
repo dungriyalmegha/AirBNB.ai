@@ -80,7 +80,7 @@ export function PropertiesPage() {
       <section className="container-page">
         <p className="eyebrow mb-3">Find a place</p>
         <h1 className="font-display text-5xl font-semibold leading-none text-forest sm:text-6xl">{plan ? <>Homes for a <em className="font-medium text-olive">{occasionLabel(plan).toLowerCase()}</em></> : <>Whole places in Gurgaon</>}</h1>
-        <p className="mt-4 max-w-xl text-ink/70">Every place is rented out whole: no reception, no strangers, just your group. Check your date, then book on Airbnb or message us.</p>
+        <p className="mt-4 max-w-xl text-ink/70">Every place is rented out whole, just for your group. Check your date, then book on Airbnb or message us.</p>
         <div className="mt-8">
           <SearchBar
             key={`${where}|${checkIn}|${checkOut}|${plan}|${people}`}

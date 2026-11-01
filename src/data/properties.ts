@@ -19,7 +19,7 @@ export const seedProperties: Property[] = [
     tagline: 'A cosy 1BHK for date nights, movie nights and small hangouts',
     shortDescription: 'The whole loft is yours: a projector, a big sofa and mood lighting, a short walk from Cyber Hub. Made for small groups and slow evenings.',
     description:
-      'The Cyber Loft is the place for a small, good night in. Book the whole flat and it’s just you and your people: no reception, no shared corridors, no hotel rules about who can come up.\n\nThere’s a big L-shaped sofa, a projector with a pull-down screen, a Bluetooth speaker and warm mood lighting. The kitchen has everything you need to cook together or plate up a takeaway from Cyber Hub, which is a short walk away.\n\nGreat for a date night, a movie marathon with friends, a small birthday or just a quiet staycation in the city. One bedroom for anyone who wants to stay over.',
+      'The Cyber Loft is the place for a small, good night in. Book the whole flat and it’s just you and your people.\n\nThere’s a big L-shaped sofa, a projector with a pull-down screen, a Bluetooth speaker and warm mood lighting. The kitchen has everything you need to cook together or plate up a takeaway from Cyber Hub, which is a short walk away.\n\nGreat for a date night, a movie marathon with friends, a small birthday or just a quiet staycation in the city. One bedroom for anyone who wants to stay over.',
     images: [
       img('1522708323590-d24dbb6b0267', 'Bright living area with sofa and dining table', 1),
       img('1663811397219-c572550dffc5', 'Lounge with a big sofa and screen for movie nights', 2),

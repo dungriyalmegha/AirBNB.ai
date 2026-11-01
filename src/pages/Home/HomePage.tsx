@@ -51,9 +51,6 @@ export function HomePage() {
             <h1 className="font-display text-[42px] font-semibold leading-[0.98] text-ivory sm:text-7xl lg:text-[88px]" aria-label="The whole place. Your people. Your weekend.">
               <span aria-hidden="true">The whole place.<br />Your people.<br /><RotatingWord words={HERO_WORDS} /></span>
             </h1>
-            <span className="absolute -top-4 right-0 hidden animate-wiggle items-center gap-2 rounded-full bg-marigold px-5 py-2 font-hand text-2xl font-bold text-ink shadow-lift lg:flex">
-              <Flower className="h-5 w-5" color="#e2683c" /> no reception, no strangers
-            </span>
             <Sun className="pointer-events-none absolute -right-4 top-24 hidden h-28 w-28 text-marigold/70 lg:block" />
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-ivory/85">
               Rent an entire home in {CITY}, just for you and your people. Slow weekends, long dinners, movie nights, the odd celebration. It’s all yours.

@@ -58,7 +58,7 @@ export const stayNear = [
 
 /** House rules shown on the homepage. Edit to match how you actually run your places. */
 export const partyRules = [
-  { title: 'The whole place is yours', body: 'No reception, no shared rooms, no strangers. Just your group.' },
+  { title: 'The whole place is yours', body: 'Every room is yours for the stay, just for your group.' },
   { title: 'Be kind to the neighbours', body: 'Music at a sensible volume after 10 pm, as most Gurgaon societies require.' },
   { title: 'One grown-up in charge', body: 'The person booking must be 18+ and share a photo ID.' },
   { title: 'Refundable deposit', body: 'A small security deposit for bigger gatherings, returned after checkout.' },
