@@ -14,7 +14,7 @@ export function MobileTabBar() {
   const item = 'flex flex-1 flex-col items-center gap-1 py-2 text-[11px] font-semibold'
   const tabs = [
     { to: '/', label: 'Home', Icon: Home, end: true },
-    { to: '/stays', label: 'Explore', Icon: Compass },
+    { to: '/stays', label: 'Places', Icon: Compass },
     { to: '/saved', label: 'Saved', Icon: Heart, badge: saved.length },
     { to: '/enquire', label: 'Enquire', Icon: Send },
   ]
@@ -30,7 +30,7 @@ export function MobileTabBar() {
             {label}
           </NavLink>
         ))}
-        <a href={wa('Hello! I’m looking for a stay in Gurgaon.')} target="_blank" rel="noopener noreferrer" className={classNames(item, 'text-whatsapp')}>
+        <a href={wa('Hi! I’m planning something in Gurgaon and need a place.')} target="_blank" rel="noopener noreferrer" className={classNames(item, 'text-whatsapp')}>
           <WhatsAppIcon className="h-5 w-5" /> WhatsApp
         </a>
       </div>

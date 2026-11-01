@@ -8,8 +8,8 @@ export const testimonials: Testimonial[] = [
     name: 'Sample guest',
     from: 'Bengaluru',
     rating: 5,
-    stay: 'The Leisure Valley Suite',
-    text: 'Placeholder review. Replace this with a real guest’s words about the quiet balcony, the walks in Leisure Valley and the Sector 29 restaurants.',
+    stay: 'The Terrace House',
+    text: 'Placeholder review. Replace this with a real guest’s words about throwing a birthday on the terrace under the string lights.',
     isSample: true,
   },
   {
@@ -17,8 +17,8 @@ export const testimonials: Testimonial[] = [
     name: 'Sample guest',
     from: 'Delhi',
     rating: 5,
-    stay: 'Skyline Residence',
-    text: 'Placeholder review. A real guest might talk about the sunset views, how easy it was to arrange the stay over WhatsApp, and the pool.',
+    stay: 'Skyline Penthouse',
+    text: 'Placeholder review. A real guest might talk about their office farewell, the skyline from the balcony and how easy it was to sort out on WhatsApp.',
     isSample: true,
   },
   {
@@ -27,7 +27,7 @@ export const testimonials: Testimonial[] = [
     from: 'Mumbai',
     rating: 5,
     stay: 'The Cyber Loft',
-    text: 'Placeholder review. Swap in a real review about the walk to the office in Cyber City, the desk setup and a good night’s sleep.',
+    text: 'Placeholder review. Swap in a real review about a movie night with friends on the projector, with food from Cyber Hub.',
     isSample: true,
   },
 ]

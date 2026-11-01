@@ -1,6 +1,7 @@
-import { ArrowRight, Briefcase, Building, Building2, CalendarCheck, CalendarRange, ChevronDown, HandHeart, Home, Hotel, MapPin, Quote, Receipt, Sparkles, Sprout, Warehouse } from 'lucide-react'
-import { Fragment, useState } from 'react'
+import { ArrowRight, Briefcase, Cake, CalendarCheck, ChevronDown, KeyRound, MapPin, MessageCircle, Quote, Search, Sparkle } from 'lucide-react'
+import { Fragment, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { OccasionIcon } from '../../components/OccasionIcon'
 import { PropertyCard } from '../../components/PropertyCard'
 import { SearchBar } from '../../components/SearchBar'
 import { Badge } from '../../components/ui/Badge'
@@ -10,28 +11,20 @@ import { SmartImage } from '../../components/ui/SmartImage'
 import { Stars } from '../../components/ui/Stars'
 import { WhatsAppIcon } from '../../components/ui/WhatsAppIcon'
 import { useData, usePublishedProperties } from '../../context/DataContext'
-import { CITY, DEFAULT_HERO, faqs, neighbourhoods, stayNear } from '../../data/gurgaon'
+import { CITY, DEFAULT_HERO, faqs, neighbourhoods, partyRules, stayNear } from '../../data/gurgaon'
+import { occasionInfo } from '../../data/occasions'
 import { testimonials } from '../../data/testimonials'
 import { useDocumentTitle } from '../../hooks/useDocumentTitle'
 import { useMoney } from '../../hooks/useMoney'
 import { useWhatsApp } from '../../hooks/useWhatsApp'
-import type { PropertyType } from '../../types'
 import { openNights } from '../../utils/availability'
 import { formatDate, today } from '../../utils/dates'
 import { classNames } from '../../utils/format'
-import { fromPrice } from '../../utils/pricing'
-
-const TYPE_ICONS: Record<PropertyType, typeof Home> = {
-  Studio: Building,
-  Apartment: Building2,
-  'Serviced apartment': Hotel,
-  Penthouse: Sparkles,
-  'Independent floor': Warehouse,
-  Villa: Home,
-}
 
 const SM_SPAN: Record<number, string> = { 1: 'sm:col-span-1', 2: 'sm:col-span-2' }
 const LG_SPAN: Record<number, string> = { 1: 'lg:col-span-1', 2: 'lg:col-span-2', 3: 'lg:col-span-3' }
+
+const HERO_WORDS = ['Your party.', 'Your birthday.', 'Your movie night.', 'Your team night.', 'Your weekend.']
 
 export function HomePage() {
   useDocumentTitle()
@@ -45,73 +38,59 @@ export function HomePage() {
       {/* HERO: the owner's photo of DLF Cyber City Building 9A & 9B (set in Admin → Settings) */}
       <section className="relative isolate flex min-h-[100svh] items-end overflow-hidden pb-12 pt-32 sm:items-center sm:pb-20">
         <SmartImage src={settings.heroImageUrl || DEFAULT_HERO} alt={settings.heroImageAlt} eager quietFallback className="absolute inset-0 -z-20 h-full w-full scale-105" />
-        <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#141b16]/65 via-[#141b16]/30 to-[#141b16]/80" />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-b from-night/75 via-night/40 to-night/90" />
+        <div className="pointer-events-none absolute -left-40 top-1/3 -z-10 h-[28rem] w-[28rem] rounded-full bg-coral/25 blur-[130px]" />
+        <div className="pointer-events-none absolute -right-20 top-0 -z-10 h-96 w-96 rounded-full bg-marigold/20 blur-[130px]" />
         <div className="container-page">
-          <div className="max-w-3xl animate-fade-up">
+          <div className="relative max-w-4xl animate-fade-up">
             <p className="mb-5 inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-sand ring-1 ring-white/20 backdrop-blur">
-              <MapPin className="h-3.5 w-3.5" /> {CITY}<span className="hidden sm:inline"> · Cyber City · Golf Course Road</span>
+              <MapPin className="h-3.5 w-3.5" /> {CITY}<span className="hidden sm:inline"> · Whole flats for parties & stays</span>
             </p>
-            <h1 className="font-display text-[50px] font-semibold leading-[0.98] text-ivory sm:text-7xl lg:text-[88px]">
-              Find Your Place <br className="hidden sm:block" />to <em className="font-medium text-sand">Slow Down.</em>
+            <h1 className="font-display text-[50px] font-semibold leading-[0.95] text-ivory sm:text-7xl lg:text-[92px]" aria-label="The whole place. Your people. Your party.">
+              <span aria-hidden="true">The whole place.<br />Your people.<br /><RotatingWord words={HERO_WORDS} /></span>
             </h1>
+            <span className="absolute -top-2 right-0 hidden animate-wiggle items-center gap-2 rounded-full bg-marigold px-5 py-2.5 text-sm font-bold text-ink shadow-lift lg:flex">
+              <KeyRound className="h-4 w-4" /> No reception. No strangers.
+            </span>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-ivory/85">
-              Thoughtfully curated stays in the heart of {CITY}, minutes from DLF Cyber City. For work trips, family visits and unhurried city breaks.
+              Rent an entire flat in {CITY} for a birthday, a house party, an office night out or just a weekend away. Bring your crew. It’s all yours.
             </p>
           </div>
-          <div className="mt-10 max-w-5xl animate-fade-up [animation-delay:150ms]">
+          <div className="mt-10 max-w-6xl animate-fade-up [animation-delay:150ms]">
             <SearchBar />
             <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-3">
-              <ButtonLink to="/stays" variant="accent" iconRight={<ArrowRight className="h-4 w-4" />}>Explore properties</ButtonLink>
-              <ButtonA href={wa(`Hello! I’m looking for a stay in ${CITY}.`)} target="_blank" rel="noopener noreferrer" variant="light" icon={<WhatsAppIcon className="h-5 w-5 text-whatsapp" />}>WhatsApp us</ButtonA>
+              <ButtonLink to="/stays" variant="accent" iconRight={<ArrowRight className="h-4 w-4" />}>See all places</ButtonLink>
+              <ButtonA href={wa(`Hi! I’m planning something in ${CITY} and need a place.`)} target="_blank" rel="noopener noreferrer" variant="light" icon={<WhatsAppIcon className="h-5 w-5 text-whatsapp" />}>Tell us your plan</ButtonA>
             </div>
           </div>
         </div>
       </section>
 
-      <StayTypes />
+      <OccasionMarquee />
+      <PlanTiles />
 
       {/* LISTINGS GRID with promo banners in between */}
       <section className="container-page pb-24">
         <SectionHeading
-          eyebrow={`Our homes in ${CITY}`}
-          title={<>Available now, <em className="font-medium text-olive">hand-picked</em></>}
-          intro="Every home is ours and looked after by us. Book instantly on Airbnb where listed, or enquire directly and talk to a real person."
-          action={<ButtonLink to="/stays" variant="outline" iconRight={<ArrowRight className="h-4 w-4" />}>View all stays</ButtonLink>}
+          eyebrow={`Our places in ${CITY}`}
+          title={<>Yours for the night, <em className="font-medium text-olive">the whole thing</em></>}
+          intro="Every place is ours and rented out whole, so it’s only ever your group inside. Book instantly on Airbnb where listed, or message us and talk to a real person."
+          action={<ButtonLink to="/stays" variant="outline" iconRight={<ArrowRight className="h-4 w-4" />}>See all places</ButtonLink>}
         />
         <div className="grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
           {shown.map((p, i) => (
             <Fragment key={p.id}>
               <PropertyCard property={p} />
-              {i === 1 && shown.length > 2 && <PromoCard kind="work" />}
+              {i === 1 && shown.length > 2 && <PromoCard kind="office" />}
             </Fragment>
           ))}
-          {shown.length <= 2 && <PromoCard kind="work" />}
+          {shown.length <= 2 && <PromoCard kind="office" />}
           {/* Stretch the last banner to fill its row so the grid never ends with a gap. */}
-          <PromoCard kind="long" className={classNames(SM_SPAN[2 - ((shown.length + 1) % 2)], LG_SPAN[3 - ((shown.length + 1) % 3)])} />
+          <PromoCard kind="extras" className={classNames(SM_SPAN[2 - ((shown.length + 1) % 2)], LG_SPAN[3 - ((shown.length + 1) % 3)])} />
         </div>
       </section>
 
-      {/* WHY */}
-      <section className="bg-cream/60 py-24">
-        <div className="container-page">
-          <SectionHeading align="center" eyebrow="Why book with us" title="Hospitality that feels personal" />
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              { Icon: Sprout, title: 'Personally curated', body: 'We own and care for every home, so the photos are honest and the details are right.' },
-              { Icon: Receipt, title: 'Transparent pricing', body: 'See the nightly rate, fees and estimated total before you enquire. No surprises.' },
-              { Icon: HandHeart, title: 'Personal assistance', body: 'Talk to us directly on WhatsApp for airport pickups, local tips or anything else.' },
-              { Icon: Sparkles, title: 'Memorable stays', body: 'Spotless homes, thoughtful touches and quiet nights in a busy city.' },
-            ].map(({ Icon, title, body }) => (
-              <div key={title} className="card p-7 transition hover:-translate-y-1 hover:shadow-lift">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-forest text-ivory"><Icon className="h-5 w-5" /></div>
-                <h3 className="mt-6 font-display text-2xl font-semibold text-forest">{title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-ink/70">{body}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
+      <HowItWorks />
       <Neighbourhoods />
       <TestimonialsSection />
       <PlanAheadSection />
@@ -121,58 +100,143 @@ export function HomePage() {
   )
 }
 
-/** cozycozy-style "search by accommodation type" tiles, built from the types you actually have. */
-function StayTypes() {
-  const properties = usePublishedProperties()
-  const money = useMoney()
-  const types = [...new Set(properties.map((p) => p.type))]
+/** Hero headline's last line, cycling through what people book us for. */
+function RotatingWord({ words }: { words: string[] }) {
+  const [i, setI] = useState(0)
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const t = window.setInterval(() => setI((n) => (n + 1) % words.length), 2600)
+    return () => window.clearInterval(t)
+  }, [words.length])
   return (
-    <section className="container-page relative z-10 -mt-8 mb-20 sm:-mt-10">
-      <div className="no-scrollbar flex gap-3 overflow-x-auto rounded-[28px] bg-white p-3 shadow-lift sm:justify-center">
-        <Link to="/stays" className="flex shrink-0 items-center gap-3 rounded-2xl bg-forest px-5 py-3.5 text-ivory transition hover:bg-forest-dark">
-          <Home className="h-5 w-5" />
-          <span><span className="block text-sm font-semibold">All stays</span><span className="block text-xs text-ivory/70">{properties.length} homes</span></span>
-        </Link>
-        {types.map((t) => {
-          const Icon = TYPE_ICONS[t] ?? Home
-          const list = properties.filter((p) => p.type === t)
+    <span className="inline-block overflow-hidden pb-2 align-bottom">
+      <em key={i} className="inline-block animate-word-in font-medium text-marigold">{words[i]}</em>
+    </span>
+  )
+}
+
+function OccasionMarquee() {
+  const items = [...occasionInfo.map((o) => o.title), 'Farewells', 'Reunions', 'Bachelor nights', 'Match nights', 'Anniversaries']
+  const row = (hidden?: boolean) => (
+    <ul className="flex shrink-0 items-center" aria-hidden={hidden}>
+      {items.map((t) => (
+        <li key={t} className="flex items-center whitespace-nowrap px-6 font-display text-2xl italic text-ivory/90 sm:text-3xl">
+          {t}<Sparkle className="ml-12 h-4 w-4 text-marigold" />
+        </li>
+      ))}
+    </ul>
+  )
+  return (
+    <div className="relative overflow-hidden bg-night py-5" aria-label="What people book us for">
+      <div className="flex w-max animate-marquee hover:[animation-play-state:paused]">{row()}{row(true)}</div>
+    </div>
+  )
+}
+
+/** "What's the plan?" tiles. Counts come from the places' own occasion tags. */
+function PlanTiles() {
+  const properties = usePublishedProperties()
+  const wa = useWhatsApp()
+  return (
+    <section className="container-page py-24">
+      <SectionHeading
+        eyebrow="Pick your plan"
+        title={<>What are we <em className="font-medium text-olive">celebrating?</em></>}
+        intro="Tell us the occasion and we’ll show you the places that suit it, from a quiet date night to a 40-person terrace party."
+      />
+      <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
+        {occasionInfo.map((o, i) => {
+          const count = properties.filter((p) => o.occasion === 'Staycation' || p.occasions.includes(o.occasion)).length
           return (
-            <Link key={t} to={`/stays?type=${encodeURIComponent(t)}`} className="flex shrink-0 items-center gap-3 rounded-2xl px-5 py-3.5 ring-1 ring-line transition hover:bg-ivory hover:ring-forest/30">
-              <Icon className="h-5 w-5 text-olive" />
-              <span>
-                <span className="block text-sm font-semibold text-ink">{t === 'Apartment' ? 'Apartments' : `${t}s`}</span>
-                <span className="block text-xs text-muted">from {money(Math.min(...list.map(fromPrice)))}</span>
-              </span>
+            <Link key={o.occasion} to={`/stays?plan=${encodeURIComponent(o.occasion)}`} className={classNames('group relative block overflow-hidden rounded-3xl', i === 0 && 'col-span-2 lg:row-span-2')}>
+              <SmartImage src={o.image} alt="" className={classNames('w-full transition duration-700 group-hover:scale-105', i === 0 ? 'aspect-[4/3] lg:aspect-auto lg:h-full' : 'aspect-[4/5]')} />
+              <div className="absolute inset-0 bg-gradient-to-t from-night/90 via-night/25 to-transparent" />
+              <div className="absolute left-4 top-4 flex h-10 w-10 items-center justify-center rounded-2xl bg-marigold text-ink shadow-lift transition group-hover:-rotate-6 sm:h-11 sm:w-11">
+                <OccasionIcon name={o.occasion} className="h-5 w-5" />
+              </div>
+              <div className="absolute inset-x-0 bottom-0 p-4 text-ivory sm:p-6">
+                <h3 className={classNames('font-display font-semibold leading-tight', i === 0 ? 'text-4xl sm:text-5xl' : 'text-2xl sm:text-3xl')}>{o.title}</h3>
+                <p className={classNames('mt-1 text-ivory/80', i === 0 ? 'text-base' : 'hidden text-sm sm:block')}>{o.line}</p>
+                <p className="mt-3 flex items-center gap-1.5 text-xs font-semibold text-marigold">
+                  {count ? `${count} ${count === 1 ? 'place' : 'places'}` : 'Ask us'} <ArrowRight className="h-3.5 w-3.5 transition group-hover:translate-x-1" />
+                </p>
+              </div>
             </Link>
           )
         })}
+        {/* Fills the last row: 1 big tile (4 slots) + 6 small + this wide one = 3 full rows. */}
+        <a href={wa('Hi! I’m planning something a bit different. Can you help?')} target="_blank" rel="noopener noreferrer" className="group relative col-span-2 flex min-h-[200px] flex-col justify-end overflow-hidden rounded-3xl bg-coral p-6 text-ivory sm:p-8">
+          <div className="absolute -right-12 -top-12 h-52 w-52 rounded-full bg-marigold/40 blur-2xl transition group-hover:scale-110" />
+          <Sparkle className="absolute right-8 top-8 h-8 w-8 text-marigold transition group-hover:rotate-45" />
+          <p className="eyebrow mb-2 !text-ivory/80">Something else?</p>
+          <h3 className="font-display text-3xl font-semibold leading-tight sm:text-4xl">Anniversary, bachelor night, match screening…</h3>
+          <p className="mt-3 flex items-center gap-2 text-sm font-semibold"><WhatsAppIcon className="h-4 w-4" /> Tell us the plan on WhatsApp <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" /></p>
+        </a>
       </div>
     </section>
   )
 }
 
-function PromoCard({ kind, className }: { kind: 'work' | 'long'; className?: string }) {
+function PromoCard({ kind, className }: { kind: 'office' | 'extras'; className?: string }) {
   const wa = useWhatsApp()
-  const work = kind === 'work'
+  const office = kind === 'office'
   return (
-    <aside className={classNames('relative flex min-h-[340px] flex-col justify-end overflow-hidden rounded-3xl p-7', work ? 'bg-forest text-ivory' : 'bg-sand/70 text-forest', className)}>
-      <div className={classNames('absolute -right-10 -top-10 h-44 w-44 rounded-full', work ? 'bg-olive/40' : 'bg-accent/25')} />
-      <div className={classNames('absolute right-8 top-8 flex h-12 w-12 items-center justify-center rounded-2xl', work ? 'bg-ivory/10' : 'bg-white/70')}>
-        {work ? <Briefcase className="h-5 w-5" /> : <CalendarRange className="h-5 w-5" />}
+    <aside className={classNames('relative flex min-h-[340px] flex-col justify-end overflow-hidden rounded-3xl p-7', office ? 'bg-night text-ivory' : 'bg-marigold text-ink', className)}>
+      <div className={classNames('absolute -right-10 -top-10 h-44 w-44 rounded-full', office ? 'bg-coral/30 blur-2xl' : 'bg-coral/25')} />
+      <div className={classNames('absolute right-8 top-8 flex h-12 w-12 items-center justify-center rounded-2xl', office ? 'bg-ivory/10' : 'bg-white/60')}>
+        {office ? <Briefcase className="h-5 w-5" /> : <Cake className="h-5 w-5" />}
       </div>
-      <p className={classNames('eyebrow mb-3', work ? '!text-sand' : '')}>{work ? 'Here for work?' : 'Longer stays'}</p>
-      <h3 className="font-display text-3xl font-semibold leading-tight">{work ? 'Stay minutes from DLF Cyber City' : 'Staying a week or a month?'}</h3>
-      <p className={classNames('mt-3 text-sm leading-relaxed', work ? 'text-ivory/75' : 'text-ink/70')}>
-        {work ? 'Fast Wi-Fi, a proper desk and power backup, close to the offices of Cyber City and Golf Course Road.' : 'Ask us about weekly and monthly rates for project stays, relocations and family visits.'}
+      <p className={classNames('eyebrow mb-3', office ? '!text-marigold' : '!text-ink/70')}>{office ? 'Team night?' : 'Make it special'}</p>
+      <h3 className="font-display text-3xl font-semibold leading-tight">{office ? 'Office parties, minus the office' : 'Need decor, a cake or food?'}</h3>
+      <p className={classNames('mt-3 text-sm leading-relaxed', office ? 'text-ivory/75' : 'text-ink/75')}>
+        {office ? 'Farewells, offsites and launch parties a short cab ride from Cyber City, with room for the whole team.' : 'Tell us the plan on WhatsApp and we’ll try to help with balloons, decor, a cake or a good caterer nearby.'}
       </p>
       <div className="mt-6">
-        {work ? (
-          <ButtonLink to="/stays?where=Cyber%20City" variant="light" size="sm" iconRight={<ArrowRight className="h-4 w-4" />}>Stays near Cyber City</ButtonLink>
+        {office ? (
+          <ButtonLink to="/stays?plan=Office%20party" variant="light" size="sm" iconRight={<ArrowRight className="h-4 w-4" />}>Places for office parties</ButtonLink>
         ) : (
-          <ButtonA href={wa('Hello! I’m looking for a longer stay. Could you share weekly or monthly rates?')} target="_blank" rel="noopener noreferrer" variant="whatsapp" size="sm" icon={<WhatsAppIcon className="h-4 w-4" />}>Ask about long-stay rates</ButtonA>
+          <ButtonA href={wa('Hi! I’m planning a party. Can you help with decor, a cake or food?')} target="_blank" rel="noopener noreferrer" variant="primary" size="sm" icon={<WhatsAppIcon className="h-4 w-4" />}>Ask on WhatsApp</ButtonA>
         )}
       </div>
     </aside>
+  )
+}
+
+function HowItWorks() {
+  const steps = [
+    { Icon: Search, title: 'Pick a place and a date', body: 'Filter by your plan and group size, then check the calendar. Prices are for the whole place.' },
+    { Icon: MessageCircle, title: 'Tell us the plan', body: 'Book on Airbnb or send us the details. We confirm the date, the price and the deposit with you.' },
+    { Icon: KeyRound, title: 'Get the keys', body: 'The whole place is yours. Party, crash, and check out by 11 the next morning.' },
+  ]
+  return (
+    <section className="relative overflow-hidden bg-night py-24 text-ivory">
+      <div className="pointer-events-none absolute -right-32 top-0 h-96 w-96 rounded-full bg-coral/20 blur-[120px]" />
+      <div className="container-page relative">
+        <p className="eyebrow mb-3 !text-marigold">How it works</p>
+        <h2 className="max-w-2xl font-display text-4xl font-semibold leading-[1.05] sm:text-6xl">Not a hotel. <em className="font-medium text-marigold">Your place</em> for the night.</h2>
+        <ol className="mt-14 grid gap-5 md:grid-cols-3">
+          {steps.map(({ Icon, title, body }, i) => (
+            <li key={title} className="relative rounded-3xl bg-ivory/[0.05] p-7 ring-1 ring-ivory/10">
+              <span className="font-display text-6xl font-semibold text-ivory/15">0{i + 1}</span>
+              <div className="absolute right-7 top-7 flex h-12 w-12 items-center justify-center rounded-2xl bg-marigold text-ink"><Icon className="h-5 w-5" /></div>
+              <h3 className="mt-4 font-display text-2xl font-semibold">{title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-ivory/70">{body}</p>
+            </li>
+          ))}
+        </ol>
+        <div className="mt-16 border-t border-ivory/10 pt-12">
+          <h3 className="font-display text-3xl font-semibold">The friendly rules</h3>
+          <ul className="mt-6 grid gap-x-8 gap-y-6 sm:grid-cols-2 lg:grid-cols-4">
+            {partyRules.map((r) => (
+              <li key={r.title}>
+                <p className="flex items-center gap-2 font-semibold"><Sparkle className="h-4 w-4 text-marigold" />{r.title}</p>
+                <p className="mt-1.5 text-sm leading-relaxed text-ivory/65">{r.body}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
   )
 }
 
@@ -180,7 +244,7 @@ function Neighbourhoods() {
   const properties = usePublishedProperties()
   return (
     <section className="container-page py-24 sm:py-28">
-      <SectionHeading eyebrow={`Explore ${CITY}`} title={<>Pick your <em className="font-medium text-olive">neighbourhood</em></>} intro={`From the glass towers of Cyber City to the green lanes of Sector 29, each part of ${CITY} has its own rhythm.`} />
+      <SectionHeading eyebrow={`Explore ${CITY}`} title={<>Pick your <em className="font-medium text-olive">scene</em></>} intro={`Cyber Hub’s bars, the Golf Course Road skyline or Sector 29’s night out: each part of ${CITY} has its own vibe.`} />
       <div className="grid gap-5 md:grid-cols-3">
         {neighbourhoods.map((n) => {
           const count = properties.filter((p) => [p.region, p.location].some((s) => s.toLowerCase().includes(n.query.toLowerCase()))).length
@@ -191,7 +255,7 @@ function Neighbourhoods() {
               <div className="absolute inset-x-0 bottom-0 p-6 text-ivory">
                 <div className="flex items-center justify-between gap-3">
                   <h3 className="font-display text-3xl font-semibold">{n.name}</h3>
-                  {count > 0 && <span className="rounded-full bg-white/15 px-3 py-1 text-xs font-semibold backdrop-blur">{count} {count === 1 ? 'stay' : 'stays'}</span>}
+                  {count > 0 && <span className="rounded-full bg-white/15 px-3 py-1 text-xs font-semibold backdrop-blur">{count} {count === 1 ? 'place' : 'places'}</span>}
                 </div>
                 <p className="mt-2 text-sm text-ivory/80">{n.blurb}</p>
                 <div className="mt-4 flex flex-wrap gap-1.5">
@@ -250,12 +314,12 @@ function PlanAheadSection() {
         <div className="grid lg:grid-cols-2">
           <div className="p-8 sm:p-12 lg:p-16">
             <p className="eyebrow mb-3">Plan ahead</p>
-            <h2 className="font-display text-4xl font-semibold leading-[1.05] text-forest sm:text-5xl">Coming to {CITY}? Let’s help you find the right stay.</h2>
+            <h2 className="font-display text-4xl font-semibold leading-[1.05] text-forest sm:text-5xl">Got a date in mind? Check it now.</h2>
             <p className="mt-5 leading-relaxed text-ink/70">
-              With only a few homes, popular dates like conference weeks, long weekends and the wedding season may fill quickly. Check availability for your dates and we’ll get back to you quickly.
+              We only have a few places and each one goes to one group at a time. See what’s open below, or send us your date and we’ll tell you straight away if it’s free.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <ButtonLink to="/stays" variant="primary" size="lg" icon={<CalendarCheck className="h-4 w-4" />}>Explore available dates</ButtonLink>
+              <ButtonLink to="/stays" variant="primary" size="lg" icon={<CalendarCheck className="h-4 w-4" />}>See open dates</ButtonLink>
               <ButtonA href={wa('Hello! Can you help me check availability for my dates?')} target="_blank" rel="noopener noreferrer" variant="whatsapp" size="lg" icon={<WhatsAppIcon />}>Ask on WhatsApp</ButtonA>
             </div>
           </div>
@@ -321,7 +385,7 @@ function StayNearLinks() {
   return (
     <section className="container-page">
       <div className="rounded-3xl border border-line p-8 sm:p-10">
-        <h2 className="font-display text-3xl font-semibold text-forest">Find a stay near…</h2>
+        <h2 className="font-display text-3xl font-semibold text-forest">Find a place near…</h2>
         <ul className="mt-6 grid gap-x-8 gap-y-3 text-sm sm:grid-cols-2 lg:grid-cols-3">
           {stayNear.map((l) => (
             <li key={l.label}>

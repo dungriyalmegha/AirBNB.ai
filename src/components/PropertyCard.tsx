@@ -1,4 +1,4 @@
-import { BedDouble, Bath, ChevronLeft, ChevronRight, ExternalLink, Heart, MapPin, Users } from 'lucide-react'
+import { BedDouble, ChevronLeft, ChevronRight, ExternalLink, Heart, KeyRound, MapPin, PartyPopper } from 'lucide-react'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useData } from '../context/DataContext'
@@ -11,6 +11,7 @@ import { availabilityLabel, openNights } from '../utils/availability'
 import { classNames } from '../utils/format'
 import { fromPrice } from '../utils/pricing'
 import { enquiryMessage } from '../utils/whatsapp'
+import { OccasionIcon } from './OccasionIcon'
 import { Badge } from './ui/Badge'
 import { ButtonA, ButtonLink } from './ui/Button'
 import { SmartImage } from './ui/SmartImage'
@@ -45,8 +46,8 @@ export function PropertyCard({ property, showDescription, query = '' }: { proper
         </div>
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/35 via-transparent to-transparent" />
         <div className="absolute left-4 top-4 flex flex-wrap gap-2 pr-14">
-          {property.featured && <Badge tone="accent" className="bg-white/95 text-accent-dark shadow-sm">Featured</Badge>}
-          <Badge className="bg-white/95 shadow-sm">{property.type}</Badge>
+          <Badge className="bg-white/95 shadow-sm"><KeyRound className="h-3 w-3" /> Whole place</Badge>
+          {property.featured && <Badge className="!bg-marigold !text-ink shadow-sm">Party favourite</Badge>}
           {property.airbnbUrl && <Badge className="bg-[#ff385c] !text-white shadow-sm">Also on Airbnb</Badge>}
         </div>
         <button
@@ -94,21 +95,28 @@ export function PropertyCard({ property, showDescription, query = '' }: { proper
         {showDescription && <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-ink/70">{property.shortDescription}</p>}
 
         <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-ink/75">
-          <span className="flex items-center gap-1.5"><Users className="h-4 w-4 text-olive" /> {property.maxGuests} guests</span>
-          <span className="flex items-center gap-1.5"><BedDouble className="h-4 w-4 text-olive" /> {property.bedrooms} bedrooms</span>
-          <span className="flex items-center gap-1.5"><Bath className="h-4 w-4 text-olive" /> {property.bathrooms} baths</span>
+          <span className="flex items-center gap-1.5"><PartyPopper className="h-4 w-4 text-accent" /> Up to {property.partyCapacity} people</span>
+          <span className="flex items-center gap-1.5"><BedDouble className="h-4 w-4 text-olive" /> Sleeps {property.maxGuests}</span>
         </div>
+
+        {property.occasions.length > 0 && (
+          <ul className="mt-3 flex flex-wrap gap-1.5" aria-label="Good for">
+            {property.occasions.slice(0, 4).map((o) => (
+              <li key={o} className="flex items-center gap-1 rounded-full bg-cream px-2.5 py-1 text-[11px] font-semibold text-forest"><OccasionIcon name={o} className="h-3 w-3 text-accent-dark" />{o}</li>
+            ))}
+          </ul>
+        )}
 
         <p className={classNames('mt-3 flex items-center gap-2 text-xs font-semibold', avail.tone === 'good' ? 'text-[#3f6b48]' : avail.tone === 'warn' ? 'text-[#8a5a14]' : 'text-[#9a3b27]')}>
           <span className="h-1.5 w-1.5 rounded-full bg-current" /> {avail.label}
         </p>
 
         <div className="mt-5 flex gap-2">
-          <ButtonLink to={href} variant="primary" size="sm" className="flex-1">View stay</ButtonLink>
+          <ButtonLink to={href} variant="primary" size="sm" className="flex-1">See the place</ButtonLink>
           {property.airbnbUrl ? (
             <ButtonA href={airbnbLink(property.airbnbUrl)} target="_blank" rel="noopener noreferrer" variant="outline" size="sm" className="flex-1" iconRight={<ExternalLink className="h-3.5 w-3.5" />}>Book on Airbnb</ButtonA>
           ) : (
-            <ButtonLink to={`/enquire?property=${property.slug}`} variant="outline" size="sm" className="flex-1">Enquire now</ButtonLink>
+            <ButtonLink to={`/enquire?property=${property.slug}`} variant="outline" size="sm" className="flex-1">Book it</ButtonLink>
           )}
           <ButtonA
             href={wa(enquiryMessage({ propertyName: property.name }))}

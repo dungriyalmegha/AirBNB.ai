@@ -9,7 +9,7 @@ import type { Enquiry, Property } from '../types'
 import { addDays, formatDate, today } from '../utils/dates'
 import { isEmail, isPhone, validateStayDates } from '../utils/validation'
 import { enquiryMessage } from '../utils/whatsapp'
-import { useStayQuote, type Stay } from './BookingWidget'
+import { planOptions, useStayQuote, type Stay } from './BookingWidget'
 import { Button, ButtonA, ButtonLink } from './ui/Button'
 import { SelectField, TextArea, TextField } from './ui/Field'
 import { WhatsAppIcon } from './ui/WhatsAppIcon'
@@ -18,7 +18,7 @@ interface Contact { fullName: string; phone: string; email: string; specialReque
 type Errors = Partial<Record<keyof Contact | keyof Stay | 'propertyId', string>>
 
 /**
- * Enquiry form. Dates and guests can be controlled by a parent (property page)
+ * Enquiry form. Dates, plan and group size can be controlled by a parent (property page)
  * so they stay in sync with the booking card.
  */
 export function EnquiryForm({
@@ -44,7 +44,7 @@ export function EnquiryForm({
   useEffect(() => { if (fixedProperty) setPropertyId(fixedProperty.id) }, [fixedProperty])
   const property = properties.find((p) => p.id === propertyId)
 
-  const [localStay, setLocalStay] = useState<Stay>({ checkIn: '', checkOut: '', adults: 2, children: 0 })
+  const [localStay, setLocalStay] = useState<Stay>({ checkIn: '', checkOut: '', people: 10, occasion: '' })
   const stay = controlledStay ?? localStay
   const setStay = (s: Stay) => (onStayChange ? onStayChange(s) : setLocalStay(s))
 
@@ -65,8 +65,10 @@ export function EnquiryForm({
     if (!isPhone(c.phone)) e.phone = 'Enter a valid mobile number with country code'
     if (!isEmail(c.email)) e.email = 'Enter a valid email address'
     Object.assign(e, validateStayDates(stay.checkIn, stay.checkOut))
-    if (stay.adults < 1) e.adults = 'At least one adult is required'
-    if (property && stay.adults + stay.children > property.maxGuests) e.adults = `${property.name} sleeps up to ${property.maxGuests} guests`
+    if (!stay.occasion) e.occasion = 'Tell us what you’re planning'
+    if (!(stay.people >= 1)) e.people = 'How many people are coming?'
+    else if (property && stay.people > property.partyCapacity) e.people = `${property.name} fits up to ${property.partyCapacity} people`
+    else if (property && stay.occasion === 'Staycation' && stay.people > property.maxGuests) e.people = `For an overnight stay, ${property.name} sleeps up to ${property.maxGuests}`
     if (property && !e.checkIn && !e.checkOut && quoteState.issues.length) e.checkOut = quoteState.issues[0]
     return e
   }
@@ -90,8 +92,8 @@ export function EnquiryForm({
         email: c.email.trim(),
         checkIn: stay.checkIn,
         checkOut: stay.checkOut,
-        adults: stay.adults,
-        children: stay.children,
+        occasion: stay.occasion,
+        groupSize: stay.people,
         specialRequests: c.specialRequests.trim(),
         estimatedTotal: quote?.total ?? 0,
       })
@@ -112,7 +114,8 @@ export function EnquiryForm({
       phone: done.phone,
       checkIn: formatDate(done.checkIn),
       checkOut: formatDate(done.checkOut),
-      guests: done.adults + done.children,
+      occasion: done.occasion || undefined,
+      people: done.groupSize,
       estimate: done.estimatedTotal ? money(done.estimatedTotal) : undefined,
       requests: done.specialRequests || undefined,
     })
@@ -126,7 +129,7 @@ export function EnquiryForm({
         <dl className="mt-6 grid grid-cols-2 gap-4 rounded-2xl bg-ivory p-5 text-sm sm:grid-cols-4">
           <div><dt className="text-xs text-muted">Reference</dt><dd className="mt-1 font-semibold">{done.reference}</dd></div>
           <div><dt className="text-xs text-muted">Dates</dt><dd className="mt-1 font-semibold">{formatDate(done.checkIn, { day: 'numeric', month: 'short' })} – {formatDate(done.checkOut, { day: 'numeric', month: 'short' })}</dd></div>
-          <div><dt className="text-xs text-muted">Guests</dt><dd className="mt-1 font-semibold">{done.adults + done.children}</dd></div>
+          <div><dt className="text-xs text-muted">Plan</dt><dd className="mt-1 font-semibold">{done.occasion} · {done.groupSize} people</dd></div>
           <div><dt className="text-xs text-muted">Estimate</dt><dd className="mt-1 font-semibold">{done.estimatedTotal ? money(done.estimatedTotal) : '—'}</dd></div>
         </dl>
         <p className="mt-4 flex items-center gap-2 text-sm text-[#8a5a14]"><Clock className="h-4 w-4" /> Status: pending owner confirmation</p>
@@ -169,8 +172,8 @@ export function EnquiryForm({
             error={errors.propertyId}
             className="sm:col-span-2"
           >
-            <option value="">Choose a stay…</option>
-            {properties.map((p) => <option key={p.id} value={p.id}>{p.name} · {p.region} · up to {p.maxGuests} guests</option>)}
+            <option value="">Choose a place…</option>
+            {properties.map((p) => <option key={p.id} value={p.id}>{p.name} · {p.region} · up to {p.partyCapacity} people</option>)}
           </SelectField>
         ) : (
           <div className="sm:col-span-2">
@@ -188,14 +191,18 @@ export function EnquiryForm({
         />
         <TextField id="checkOut" label="Check-out" type="date" min={stay.checkIn ? addDays(stay.checkIn, 1) : addDays(today(), 1)} value={stay.checkOut} error={errors.checkOut} onChange={(e) => setStay({ ...stay, checkOut: e.target.value })} />
 
-        <SelectField id="adults" label="Adults" value={stay.adults} error={errors.adults} onChange={(e) => setStay({ ...stay, adults: Number(e.target.value) })}>
-          {Array.from({ length: Math.max(1, property?.maxGuests ?? 12) }, (_, i) => i + 1).map((n) => <option key={n} value={n}>{n}</option>)}
+        <SelectField id="occasion" label="What’s the plan?" value={stay.occasion} error={errors.occasion} onChange={(e) => setStay({ ...stay, occasion: e.target.value })}>
+          <option value="">Choose one…</option>
+          {planOptions(property).map((o) => <option key={o} value={o}>{o}</option>)}
         </SelectField>
-        <SelectField id="children" label="Children (2–12)" value={stay.children} onChange={(e) => setStay({ ...stay, children: Number(e.target.value) })}>
-          {Array.from({ length: Math.max(1, property?.maxGuests ?? 12) }, (_, i) => i).map((n) => <option key={n} value={n}>{n}</option>)}
-        </SelectField>
+        <TextField
+          id="people" label="How many people?" type="number" inputMode="numeric" min={1} max={property?.partyCapacity}
+          value={stay.people || ''} error={errors.people}
+          hint={property ? `Up to ${property.partyCapacity} for a party · sleeps ${property.maxGuests}` : 'Rough headcount is fine'}
+          onChange={(e) => setStay({ ...stay, people: Math.max(0, Math.round(Number(e.target.value) || 0)) })}
+        />
 
-        <TextArea id="specialRequests" label={<>Special requests <span className="font-normal normal-case tracking-normal text-muted">(optional)</span></>} value={c.specialRequests} onChange={set('specialRequests')} placeholder="Celebrations, dietary needs, arrival time, pets…" className="sm:col-span-2" maxLength={1000} />
+        <TextArea id="specialRequests" label={<>Special requests <span className="font-normal normal-case tracking-normal text-muted">(optional)</span></>} value={c.specialRequests} onChange={set('specialRequests')} placeholder="Tell us about the party: decor, cake, music, arrival time…" className="sm:col-span-2" maxLength={1000} />
       </div>
 
       {quote && quoteState.issues.length === 0 && (

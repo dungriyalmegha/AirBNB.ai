@@ -66,7 +66,7 @@ export function AdminEnquiries() {
                   <th className="px-5 py-3 font-semibold">Guest</th>
                   <th className="px-5 py-3 font-semibold">Property</th>
                   <th className="px-5 py-3 font-semibold">Dates</th>
-                  <th className="px-5 py-3 font-semibold">Guests</th>
+                  <th className="px-5 py-3 font-semibold">Plan</th>
                   <th className="px-5 py-3 text-right font-semibold">Estimate</th>
                   <th className="px-5 py-3 font-semibold">Received</th>
                   <th className="px-5 py-3 font-semibold">Status</th>
@@ -81,7 +81,7 @@ export function AdminEnquiries() {
                     </td>
                     <td className="px-5 py-3.5">{e.propertyName}</td>
                     <td className="whitespace-nowrap px-5 py-3.5">{formatDate(e.checkIn, { day: 'numeric', month: 'short' })} – {formatDate(e.checkOut, { day: 'numeric', month: 'short', year: '2-digit' })}</td>
-                    <td className="px-5 py-3.5 tabular-nums">{e.adults + e.children}</td>
+                    <td className="px-5 py-3.5 tabular-nums">{e.occasion || "Stay"} · {e.groupSize}</td>
                     <td className="px-5 py-3.5 text-right tabular-nums">{money(e.estimatedTotal)}</td>
                     <td className="whitespace-nowrap px-5 py-3.5 text-xs text-muted">{formatDateTime(e.createdAt)}</td>
                     <td className="px-5 py-3.5"><EnquiryStatusBadge status={e.status} /></td>
@@ -96,7 +96,7 @@ export function AdminEnquiries() {
               <li key={e.id}>
                 <button onClick={() => setOpen(e.id)} className="block w-full px-4 py-4 text-left">
                   <div className="flex items-center justify-between gap-2"><span className="font-semibold">{e.fullName}</span><EnquiryStatusBadge status={e.status} /></div>
-                  <div className="mt-1 text-xs text-muted">{e.propertyName} · {formatDate(e.checkIn, { day: 'numeric', month: 'short' })} – {formatDate(e.checkOut, { day: 'numeric', month: 'short' })} · {e.adults + e.children} guests</div>
+                  <div className="mt-1 text-xs text-muted">{e.propertyName} · {formatDate(e.checkIn, { day: 'numeric', month: 'short' })} – {formatDate(e.checkOut, { day: 'numeric', month: 'short' })} · {e.occasion || "Stay"} · {e.groupSize} people</div>
                   <div className="mt-1 text-xs text-muted">{money(e.estimatedTotal)} · {formatDateTime(e.createdAt)}</div>
                 </button>
               </li>
@@ -152,7 +152,8 @@ function EnquiryDetail({ enquiry: e, onClose }: { enquiry: Enquiry; onClose: () 
             <Item k="Property" v={e.propertyName} />
             <Item k="Check-in" v={formatDate(e.checkIn)} />
             <Item k="Check-out" v={`${formatDate(e.checkOut)} (${nights} nights)`} />
-            <Item k="Guests" v={`${e.adults} adults${e.children ? `, ${e.children} children` : ''}`} />
+            <Item k="Plan" v={e.occasion || 'Stay'} />
+            <Item k="People" v={e.groupSize} />
             <Item k="Estimated total" v={money(e.estimatedTotal)} />
             <Item k="Received" v={formatDateTime(e.createdAt)} />
             <Item k="Source" v={e.source === 'demo' ? <Badge>Demo data</Badge> : 'Website'} />

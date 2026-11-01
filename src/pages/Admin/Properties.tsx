@@ -55,7 +55,7 @@ export function AdminProperties() {
                 </div>
                 <p className="mt-0.5 text-sm text-muted">{p.type} · {p.location}</p>
                 <p className="mt-1.5 text-sm text-ink/75">
-                  {money(p.pricing.basePrice)}/night{p.pricing.weekendPrice ? ` · ${money(p.pricing.weekendPrice)} weekends` : ''} · {p.maxGuests} guests · {p.bedrooms} bd · {p.bathrooms} ba · {p.images.length} photos
+                  {money(p.pricing.basePrice)}/night{p.pricing.weekendPrice ? ` · ${money(p.pricing.weekendPrice)} weekends` : ''} · up to {p.partyCapacity} people · sleeps {p.maxGuests} · {p.images.length} photos
                 </p>
               </div>
               <div className="flex flex-wrap gap-1.5 sm:justify-end">

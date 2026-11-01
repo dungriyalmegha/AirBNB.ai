@@ -9,16 +9,18 @@ import { EmptyState } from '../../components/ui/EmptyState'
 import { useData, usePublishedProperties } from '../../context/DataContext'
 import { useDocumentTitle } from '../../hooks/useDocumentTitle'
 import { useMoney } from '../../hooks/useMoney'
-import type { PropertyType } from '../../types'
+import { GROUP_SIZES } from '../../data/occasions'
+import { OccasionIcon } from '../../components/OccasionIcon'
+import { OCCASIONS, type Occasion, type PropertyType } from '../../types'
 import { checkRange } from '../../utils/availability'
 import { formatDate } from '../../utils/dates'
 import { classNames } from '../../utils/format'
 import { fromPrice, quoteStay } from '../../utils/pricing'
 
-type Sort = 'featured' | 'price-asc' | 'price-desc' | 'guests'
+type Sort = 'featured' | 'price-asc' | 'price-desc' | 'size'
 
 export function PropertiesPage() {
-  useDocumentTitle('Explore stays')
+  useDocumentTitle('Find a place')
   const properties = usePublishedProperties()
   const { overrides, bookings } = useData()
   const money = useMoney()
@@ -28,7 +30,8 @@ export function PropertiesPage() {
   const where = params.get('where') ?? ''
   const checkIn = params.get('in') ?? ''
   const checkOut = params.get('out') ?? ''
-  const guests = Number(params.get('guests') ?? 0)
+  const people = Number(params.get('people') ?? 0)
+  const plan = params.get('plan') ?? ''
   const type = (params.get('type') ?? '') as PropertyType | ''
   const maxPrice = Number(params.get('max') ?? 0)
   const sort = (params.get('sort') ?? 'featured') as Sort
@@ -43,46 +46,47 @@ export function PropertiesPage() {
     setParams(next, { replace: true })
   }
 
-  const types = useMemo(() => [...new Set(properties.map((p) => p.type))], [properties])
   const priceCeil = useMemo(() => Math.max(0, ...properties.map(fromPrice)), [properties])
 
   const results = useMemo(() => {
     const q = where.trim().toLowerCase()
     let list = properties
       .filter((p) => !q || [p.name, p.location, p.region, p.type, ...p.nearby.map((n) => n.name)].some((s) => s.toLowerCase().includes(q)))
-      .filter((p) => !guests || p.maxGuests >= guests)
+      // Every place works as a plain stay, so Staycation matches all of them.
+      .filter((p) => !plan || plan === 'Staycation' || p.occasions.includes(plan as Occasion))
+      .filter((p) => !people || (plan === 'Staycation' ? p.maxGuests : p.partyCapacity) >= people)
       .filter((p) => !type || p.type === type)
       .filter((p) => !maxPrice || fromPrice(p) <= maxPrice)
       .map((p) => {
         const available = hasDates ? checkRange(p.id, checkIn, checkOut, overrides, bookings).ok : null
-        const quote = hasDates ? quoteStay(p, checkIn, checkOut, guests || 1, overrides) : null
+        const quote = hasDates ? quoteStay(p, checkIn, checkOut, people || 1, overrides) : null
         return { p, available, quote }
       })
     list = [...list].sort((a, b) => {
       if (hasDates && a.available !== b.available) return a.available ? -1 : 1
       if (sort === 'price-asc') return fromPrice(a.p) - fromPrice(b.p)
       if (sort === 'price-desc') return fromPrice(b.p) - fromPrice(a.p)
-      if (sort === 'guests') return b.p.maxGuests - a.p.maxGuests
+      if (sort === 'size') return b.p.partyCapacity - a.p.partyCapacity
       return Number(b.p.featured) - Number(a.p.featured)
     })
     return list
-  }, [properties, where, guests, type, maxPrice, sort, hasDates, checkIn, checkOut, overrides, bookings])
+  }, [properties, where, plan, people, type, maxPrice, sort, hasDates, checkIn, checkOut, overrides, bookings])
 
-  const activeFilters = [where && 'where', guests && 'guests', type && 'type', maxPrice && 'max', checkIn && 'in'].filter(Boolean).length
-  const query = searchToQuery({ checkIn, checkOut, guests })
+  const activeFilters = [where && 'where', plan && 'plan', people && 'people', type && 'type', maxPrice && 'max', checkIn && 'in'].filter(Boolean).length
+  const query = searchToQuery({ checkIn, checkOut, plan, people })
 
   return (
     <div className="pt-28">
       <section className="container-page">
-        <p className="eyebrow mb-3">Explore stays</p>
-        <h1 className="font-display text-5xl font-semibold leading-none text-forest sm:text-6xl">Stays in Gurgaon</h1>
-        <p className="mt-4 max-w-xl text-ink/70">Hand-picked homes near Cyber City, Golf Course Road and Sector 29. Check live availability, then book on Airbnb or enquire directly.</p>
+        <p className="eyebrow mb-3">Find a place</p>
+        <h1 className="font-display text-5xl font-semibold leading-none text-forest sm:text-6xl">{plan && plan !== 'Staycation' ? <>Places for your <em className="font-medium text-olive">{plan.toLowerCase()}</em></> : <>Whole places in Gurgaon</>}</h1>
+        <p className="mt-4 max-w-xl text-ink/70">Every place is rented out whole: no reception, no strangers, just your group. Check your date, then book on Airbnb or message us.</p>
         <div className="mt-8">
           <SearchBar
-            key={`${where}|${checkIn}|${checkOut}|${guests}`}
+            key={`${where}|${checkIn}|${checkOut}|${plan}|${people}`}
             variant="inline"
-            initial={{ where, checkIn, checkOut, guests: guests || 2 }}
-            onSearch={(v) => update({ where: v.where, in: v.checkIn, out: v.checkOut, guests: v.guests })}
+            initial={{ where, checkIn, checkOut, plan, people }}
+            onSearch={(v) => update({ where: v.where, in: v.checkIn, out: v.checkOut, plan: v.plan, people: v.people })}
           />
         </div>
       </section>
@@ -94,8 +98,8 @@ export function PropertiesPage() {
               Filters{activeFilters ? ` (${activeFilters})` : ''}
             </Button>
             <div className="no-scrollbar flex gap-2 overflow-x-auto">
-              <Chip active={!type} onClick={() => update({ type: '' })}>All types</Chip>
-              {types.map((t) => <Chip key={t} active={type === t} onClick={() => update({ type: t })}>{t}</Chip>)}
+              <Chip active={!plan} onClick={() => update({ plan: '' })}>Any plan</Chip>
+              {OCCASIONS.map((o) => <Chip key={o} active={plan === o} onClick={() => update({ plan: o })}><OccasionIcon name={o} className={classNames('h-4 w-4', plan === o ? 'text-sand' : 'text-accent')} />{o}</Chip>)}
             </div>
           </div>
           <label className="flex items-center gap-2 text-sm text-ink/70">
@@ -104,7 +108,7 @@ export function PropertiesPage() {
               <option value="featured">Featured</option>
               <option value="price-asc">Price: low to high</option>
               <option value="price-desc">Price: high to low</option>
-              <option value="guests">Most guests</option>
+              <option value="size">Biggest first</option>
             </select>
           </label>
         </div>
@@ -112,14 +116,14 @@ export function PropertiesPage() {
         {showFilters && (
           <div className="animate-fade-up mt-5 grid gap-6 rounded-3xl bg-white p-6 shadow-soft sm:grid-cols-3">
             <label className="block">
-              <span className="field-label">Destination or property</span>
+              <span className="field-label">Area or place</span>
               <input className="field" value={where} onChange={(e) => update({ where: e.target.value })} placeholder="e.g. Cyber City, Golf Course Road" />
             </label>
             <label className="block">
-              <span className="field-label">Guests</span>
-              <select className="field" value={guests} onChange={(e) => update({ guests: Number(e.target.value) })}>
-                <option value={0}>Any</option>
-                {Array.from({ length: 12 }, (_, i) => i + 1).map((n) => <option key={n} value={n}>{n}+ guests</option>)}
+              <span className="field-label">How many people</span>
+              <select className="field" value={people} onChange={(e) => update({ people: Number(e.target.value) })}>
+                <option value={0}>Any size</option>
+                {GROUP_SIZES.map((g) => <option key={g.value} value={g.value}>{g.label}</option>)}
               </select>
             </label>
             <label className="block">
@@ -141,14 +145,14 @@ export function PropertiesPage() {
         )}
 
         <div className="mt-6 flex flex-wrap items-center gap-2 text-sm text-ink/70">
-          <span>{results.length} {results.length === 1 ? 'stay' : 'stays'}</span>
+          <span>{results.length} {results.length === 1 ? 'place' : 'places'}</span>
           {hasDates && <Badge tone="olive">{formatDate(checkIn, { day: 'numeric', month: 'short' })} – {formatDate(checkOut, { day: 'numeric', month: 'short' })}</Badge>}
-          {guests > 0 && <Badge tone="olive">{guests} guests</Badge>}
+          {people > 0 && <Badge tone="olive">{people}+ people</Badge>}
         </div>
 
         {results.length === 0 ? (
           <div className="mt-10">
-            <EmptyState icon={<SearchX className="h-6 w-6" />} title="No stays match those filters" body="Try fewer filters or different dates. You can also message us and we’ll help you find something." action={<Button variant="primary" onClick={() => setParams({}, { replace: true })}>Clear filters</Button>} />
+            <EmptyState icon={<SearchX className="h-6 w-6" />} title="No places match those filters" body="Try fewer filters or different dates. You can also message us and we’ll help you find something." action={<Button variant="primary" onClick={() => setParams({}, { replace: true })}>Clear filters</Button>} />
           </div>
         ) : (
           <div className="mt-8 grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
@@ -172,7 +176,7 @@ export function PropertiesPage() {
 
 function Chip({ active, children, onClick }: { active: boolean; children: React.ReactNode; onClick: () => void }) {
   return (
-    <button onClick={onClick} className={classNames('shrink-0 rounded-full px-4 py-2 text-sm font-medium transition', active ? 'bg-forest text-ivory' : 'bg-white text-ink/70 ring-1 ring-line hover:ring-forest')}>
+    <button onClick={onClick} className={classNames('flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition', active ? 'bg-forest text-ivory' : 'bg-white text-ink/70 ring-1 ring-line hover:ring-forest')}>
       {children}
     </button>
   )

@@ -17,7 +17,8 @@ export interface EnquiryMessageInput {
   name?: string
   checkIn?: string
   checkOut?: string
-  guests?: number
+  occasion?: string
+  people?: number
   estimate?: string
   reference?: string
   phone?: string
@@ -25,16 +26,17 @@ export interface EnquiryMessageInput {
 }
 
 export function enquiryMessage(i: EnquiryMessageInput): string {
-  const lines = [`Hello! I am interested in booking ${i.propertyName}.`]
+  const lines = [`Hi! I’d like to book ${i.propertyName}${i.occasion && i.occasion !== 'Staycation' ? ` for ${/^[aeiou]/i.test(i.occasion) ? 'an' : 'a'} ${i.occasion.toLowerCase()}` : ''}.`]
   if (i.reference) lines.push(`Enquiry ref: ${i.reference}`)
   if (i.name) lines.push(`Name: ${i.name}`)
   if (i.phone) lines.push(`Phone: ${i.phone}`)
+  if (i.occasion) lines.push(`Plan: ${i.occasion}`)
   if (i.checkIn) lines.push(`Check-in: ${i.checkIn}`)
   if (i.checkOut) lines.push(`Check-out: ${i.checkOut}`)
-  if (i.guests) lines.push(`Guests: ${i.guests}`)
+  if (i.people) lines.push(`People: ${i.people}`)
   if (i.estimate) lines.push(`Estimated Price: ${i.estimate}`)
   if (i.requests) lines.push(`Special requests: ${i.requests}`)
-  lines.push('Please share availability and further details.')
+  lines.push('Is it free? Please share the details.')
   return lines.join('\n')
 }
 

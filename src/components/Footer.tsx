@@ -36,7 +36,7 @@ export function Footer() {
           <h3 className="mb-4 font-sans text-xs font-semibold uppercase tracking-[0.2em] text-accent">Explore</h3>
           <ul className="space-y-2.5 text-sm">
             <li><Link to="/" className="hover:text-white">Home</Link></li>
-            <li><Link to="/stays" className="hover:text-white">All stays</Link></li>
+            <li><Link to="/stays" className="hover:text-white">All places</Link></li>
             <li><Link to="/about" className="hover:text-white">About us</Link></li>
             <li><Link to="/contact" className="hover:text-white">Contact</Link></li>
           </ul>
@@ -53,7 +53,7 @@ export function Footer() {
           <h3 className="mb-4 font-sans text-xs font-semibold uppercase tracking-[0.2em] text-accent">Get in touch</h3>
           <ul className="space-y-3 text-sm">
             <li>
-              <a href={wa('Hello! I have a question about your stays.')} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 hover:text-white">
+              <a href={wa('Hi! I have a question about your places.')} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 hover:text-white">
                 <WhatsAppIcon className="h-4 w-4 text-accent" /> WhatsApp: +{settings.whatsappNumber}
               </a>
             </li>

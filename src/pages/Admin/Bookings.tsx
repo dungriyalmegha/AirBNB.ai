@@ -10,7 +10,7 @@ import { WhatsAppIcon } from '../../components/ui/WhatsAppIcon'
 import { useData } from '../../context/DataContext'
 import { useToast } from '../../context/ToastContext'
 import { useMoney } from '../../hooks/useMoney'
-import type { Booking, BookingStatus, PriceLine } from '../../types'
+import { OCCASIONS, type Booking, type BookingStatus, type PriceLine } from '../../types'
 import { addDays, diffNights, formatDate, formatDateTime, today } from '../../utils/dates'
 import { quoteStay } from '../../utils/pricing'
 import { isEmail, isPhone } from '../../utils/validation'
@@ -67,7 +67,7 @@ export function AdminBookings() {
                 <div className="flex items-center gap-2"><span className="font-semibold">{b.guestName}</span><span className="text-xs text-muted">{b.reference}</span></div>
                 <div className="text-xs text-muted">{b.phone}</div>
               </div>
-              <div className="text-sm">{b.propertyName}<div className="text-xs text-muted">{b.adults + b.children} guests</div></div>
+              <div className="text-sm">{b.propertyName}<div className="text-xs text-muted">{b.occasion || 'Stay'} · {b.groupSize} people</div></div>
               <div className="text-sm">{formatDate(b.checkIn, { day: 'numeric', month: 'short' })} – {formatDate(b.checkOut, { day: 'numeric', month: 'short', year: 'numeric' })}<div className="text-xs text-muted">{diffNights(b.checkIn, b.checkOut)} nights · {money(b.total)}</div></div>
               <BookingStatusBadge status={b.status} />
             </button>
@@ -126,7 +126,7 @@ function BookingDetail({ booking: b, onClose }: { booking: Booking; onClose: () 
             <div className="text-xs font-semibold uppercase tracking-wider text-muted">Stay</div>
             <div className="mt-2 font-semibold">{b.propertyName}</div>
             <div className="text-ink/75">{formatDate(b.checkIn)} → {formatDate(b.checkOut)} · {diffNights(b.checkIn, b.checkOut)} nights</div>
-            <div className="text-ink/75">{b.adults} adults{b.children ? `, ${b.children} children` : ''}</div>
+            <div className="text-ink/75">{b.occasion || 'Stay'} · {b.groupSize} people</div>
           </div>
           {b.enquiryId && <Link to={`/admin/enquiries?open=${b.enquiryId}`} className="inline-block text-sm font-semibold text-forest underline underline-offset-4">View original enquiry</Link>}
         </div>
@@ -157,8 +157,8 @@ function BookingFormModal({ booking, onClose, onSaved }: { booking?: Booking; on
     email: booking?.email ?? '',
     checkIn: booking?.checkIn ?? '',
     checkOut: booking?.checkOut ?? '',
-    adults: booking?.adults ?? 2,
-    children: booking?.children ?? 0,
+    occasion: booking?.occasion ?? '',
+    groupSize: booking?.groupSize ?? 10,
     status: booking?.status ?? ('confirmed' as BookingStatus),
     notes: booking?.notes ?? '',
     priceLines: booking?.priceLines ?? ([] as PriceLine[]),
@@ -170,7 +170,7 @@ function BookingFormModal({ booking, onClose, onSaved }: { booking?: Booking; on
 
   const recalc = () => {
     if (!property) return
-    const q = quoteStay(property, f.checkIn, f.checkOut, f.adults + f.children, overrides)
+    const q = quoteStay(property, f.checkIn, f.checkOut, f.groupSize, overrides)
     if (!q) return toast('Choose valid dates first', 'error')
     setF((s) => ({ ...s, priceLines: q.lines, total: q.total }))
   }
@@ -183,12 +183,12 @@ function BookingFormModal({ booking, onClose, onSaved }: { booking?: Booking; on
     if (f.email && !isEmail(f.email)) e.email = 'Invalid email'
     if (!f.checkIn) e.checkIn = 'Required'
     if (!f.checkOut || f.checkOut <= f.checkIn) e.checkOut = 'Must be after check-in'
-    if (property && f.adults + f.children > property.maxGuests) e.adults = `Max ${property.maxGuests} guests`
+    if (property && f.groupSize > property.partyCapacity) e.groupSize = `Max ${property.partyCapacity} people`
     setErrors(e)
     if (Object.keys(e).length) return
     let { priceLines, total } = f
     if (!priceLines.length && property) {
-      const q = quoteStay(property, f.checkIn, f.checkOut, f.adults + f.children, overrides)
+      const q = quoteStay(property, f.checkIn, f.checkOut, f.groupSize, overrides)
       if (q) { priceLines = q.lines; total = q.total }
     }
     const data = { ...f, priceLines, total, propertyName: property!.name, guestName: f.guestName.trim() }
@@ -223,8 +223,11 @@ function BookingFormModal({ booking, onClose, onSaved }: { booking?: Booking; on
         <TextField id="b-email" label="Email" value={f.email} error={errors.email} onChange={(e) => setF({ ...f, email: e.target.value })} className="sm:col-span-2" />
         <TextField id="b-in" label="Check-in" type="date" value={f.checkIn} error={errors.checkIn} onChange={(e) => setF({ ...f, checkIn: e.target.value, checkOut: f.checkOut > e.target.value ? f.checkOut : addDays(e.target.value, 1), priceLines: [] })} />
         <TextField id="b-out" label="Check-out" type="date" min={f.checkIn ? addDays(f.checkIn, 1) : undefined} value={f.checkOut} error={errors.checkOut} onChange={(e) => setF({ ...f, checkOut: e.target.value, priceLines: [] })} />
-        <TextField id="b-adults" label="Adults" type="number" min={1} value={f.adults} error={errors.adults} onChange={(e) => setF({ ...f, adults: Math.max(1, n(e.target.value)), priceLines: [] })} />
-        <TextField id="b-children" label="Children" type="number" min={0} value={f.children} onChange={(e) => setF({ ...f, children: n(e.target.value), priceLines: [] })} />
+        <SelectField id="b-occasion" label="Plan" value={f.occasion} onChange={(e) => setF({ ...f, occasion: e.target.value })}>
+          <option value="">Not specified</option>
+          {OCCASIONS.map((o) => <option key={o} value={o}>{o}</option>)}
+        </SelectField>
+        <TextField id="b-people" label="People" type="number" min={1} value={f.groupSize} error={errors.groupSize} onChange={(e) => setF({ ...f, groupSize: Math.max(1, n(e.target.value)), priceLines: [] })} />
         <SelectField id="b-status" label="Status" value={f.status} onChange={(e) => setF({ ...f, status: e.target.value as BookingStatus })}>
           {STATUSES.map((s) => <option key={s} value={s}>{bookingStatusMeta[s].label}</option>)}
         </SelectField>

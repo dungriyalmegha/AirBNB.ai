@@ -45,40 +45,52 @@ export const neighbourhoods: Neighbourhood[] = [
 ]
 
 export const stayNear = [
-  { label: 'Stays near DLF Cyber City', where: 'Cyber City' },
-  { label: 'Stays near Cyber Hub', where: 'Cyber Hub' },
-  { label: 'Stays near Building 9A & 9B', where: '9A' },
-  { label: 'Stays on Golf Course Road', where: 'Golf Course Road' },
-  { label: 'Stays near Galleria Market', where: 'Galleria' },
-  { label: 'Stays in Sector 29', where: 'Sector 29' },
-  { label: 'Stays near Leisure Valley Park', where: 'Leisure Valley' },
-  { label: 'Stays near Ambience Mall', where: 'Ambience' },
-  { label: 'Stays near IGI Airport', where: 'Airport' },
+  { label: 'Party places near Cyber Hub', where: 'Cyber Hub' },
+  { label: 'Places near DLF Cyber City', where: 'Cyber City' },
+  { label: 'Places near Building 9A & 9B', where: '9A' },
+  { label: 'Party places on Golf Course Road', where: 'Golf Course Road' },
+  { label: 'Places near Galleria Market', where: 'Galleria' },
+  { label: 'Party places in Sector 29', where: 'Sector 29' },
+  { label: 'Places near Leisure Valley Park', where: 'Leisure Valley' },
+  { label: 'Places near Ambience Mall', where: 'Ambience' },
+  { label: 'Places near IGI Airport', where: 'Airport' },
+]
+
+/** House rules shown on the homepage. Edit to match how you actually run your places. */
+export const partyRules = [
+  { title: 'The whole place is yours', body: 'No reception, no shared rooms, no strangers. Just your group.' },
+  { title: 'Be kind to the neighbours', body: 'Music at a sensible volume after 10 pm, as most Gurgaon societies require.' },
+  { title: 'One grown-up in charge', body: 'The person booking must be 18+ and share a photo ID.' },
+  { title: 'Refundable deposit', body: 'A small security deposit for parties, returned after checkout.' },
 ]
 
 export const faqs = [
   {
+    q: 'Can we really throw a party here?',
+    a: 'Yes, that’s the point. You book the whole place, and each listing shows how many people it fits for a party and how many can stay overnight. Just keep the music sensible after 10 pm.',
+  },
+  {
+    q: 'Do I pay per person or for the whole place?',
+    a: 'For the whole place, per night. Some places include a set number of people and add a small charge per extra person. You’ll see the full estimate before you send anything.',
+  },
+  {
+    q: 'Is there a security deposit?',
+    a: 'For parties, yes: a refundable deposit that we return after checkout once everything’s in order. We’ll share the amount when we confirm your booking.',
+  },
+  {
+    q: 'Can you help with decor, a cake or food?',
+    a: 'Ask us on WhatsApp. Depending on the date we can often help arrange balloons, decor or a cake, or point you to good caterers nearby.',
+  },
+  {
     q: 'Can I book on Airbnb instead?',
-    a: 'Yes. Several of our homes are also listed on Airbnb. Look for the “Book on Airbnb” button on a home. You can also enquire directly here or on WhatsApp and we’ll confirm with you personally.',
+    a: 'Yes. Places that are on Airbnb show a “Book on Airbnb” button. You can also enquire here or on WhatsApp and talk to us directly.',
   },
   {
     q: 'Is my booking confirmed when I send an enquiry?',
-    a: 'Not yet. An enquiry lets us check your dates. We’ll reply with availability and payment details, and your stay is confirmed once we send written confirmation.',
+    a: 'Not yet. An enquiry lets us check your date. We’ll reply with availability and payment details, and your booking is confirmed once we send written confirmation.',
   },
   {
-    q: 'How far are you from DLF Cyber City and the airport?',
-    a: 'Each home lists nearby places and approximate distances. Our homes are within a short drive of Cyber City, and IGI Airport is usually 25–40 minutes away depending on traffic.',
-  },
-  {
-    q: 'Do you offer weekly or monthly stays for work trips?',
-    a: 'Yes. Message us with your dates on WhatsApp and we’ll share long-stay rates for the home that suits you.',
-  },
-  {
-    q: 'How does check-in work?',
-    a: 'We share check-in instructions and the exact address after your booking is confirmed. Please carry a valid photo ID for every guest.',
-  },
-  {
-    q: 'What is your cancellation policy?',
-    a: 'See our policies page for the full details. In short: free cancellation well ahead of your stay, partial refunds closer to the date.',
+    q: 'What if we just want a quiet stay?',
+    a: 'Totally fine. Every place works as a normal stay too: book it for a staycation, a family visit or a work trip.',
   },
 ]

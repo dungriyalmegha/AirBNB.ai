@@ -1,25 +1,30 @@
-import { AlertCircle, ChevronDown, ExternalLink, ShieldCheck } from 'lucide-react'
-import { useState } from 'react'
+import { AlertCircle, ExternalLink, ShieldCheck } from 'lucide-react'
 import { useData } from '../context/DataContext'
 import { useMoney } from '../hooks/useMoney'
 import { useWhatsApp } from '../hooks/useWhatsApp'
-import type { Property } from '../types'
+import { OCCASIONS, type Property } from '../types'
 import { airbnbLink } from '../utils/airbnb'
 import { checkRange } from '../utils/availability'
 import { addDays, formatDate, today } from '../utils/dates'
-import { classNames } from '../utils/format'
 import { fromPrice, quoteStay } from '../utils/pricing'
 import { enquiryMessage } from '../utils/whatsapp'
 import { Button, ButtonA } from './ui/Button'
 import { Stepper } from './ui/Stepper'
 import { WhatsAppIcon } from './ui/WhatsAppIcon'
 
-export interface Stay { checkIn: string; checkOut: string; adults: number; children: number }
+export interface Stay { checkIn: string; checkOut: string; people: number; occasion: string }
+
+/** The plan choices for a property: what it's good for, plus a plain stay. */
+export const planOptions = (property?: Property): string[] => {
+  const list: string[] = property ? [...property.occasions] : [...OCCASIONS]
+  if (!list.includes('Staycation')) list.push('Staycation')
+  return list
+}
 
 /** Shared logic so the booking card, mobile bar and enquiry form agree on price and issues. */
 export function useStayQuote(property: Property | undefined, stay: Stay) {
   const { overrides, bookings } = useData()
-  const guests = stay.adults + stay.children
+  const guests = stay.people
   if (!property) return { quote: null, issues: [] as string[], guests }
   const quote = quoteStay(property, stay.checkIn, stay.checkOut, guests, overrides)
   const issues: string[] = []
@@ -30,21 +35,22 @@ export function useStayQuote(property: Property | undefined, stay: Stay) {
     if (!range.ok) issues.push(`Not available on ${range.conflicts.slice(0, 3).map((d) => formatDate(d, { day: 'numeric', month: 'short' })).join(', ')}${range.conflicts.length > 3 ? '…' : ''}. Try other dates.`)
     if (quote.nights < property.pricing.minNights) issues.push(`Minimum stay is ${property.pricing.minNights} nights.`)
   }
-  if (guests > property.maxGuests) issues.push(`This home sleeps up to ${property.maxGuests} guests.`)
+  if (guests > property.partyCapacity) issues.push(`${property.name} fits up to ${property.partyCapacity} people.`)
+  else if (stay.occasion === 'Staycation' && guests > property.maxGuests) issues.push(`For an overnight stay, ${property.name} sleeps up to ${property.maxGuests}.`)
   return { quote, issues, guests }
 }
 
 export function BookingWidget({ property, stay, onChange, onEnquire }: { property: Property; stay: Stay; onChange: (s: Stay) => void; onEnquire: () => void }) {
   const money = useMoney()
   const wa = useWhatsApp()
-  const [guestsOpen, setGuestsOpen] = useState(false)
   const { quote, issues, guests } = useStayQuote(property, stay)
 
   const waMsg = enquiryMessage({
     propertyName: property.name,
     checkIn: stay.checkIn ? formatDate(stay.checkIn) : undefined,
     checkOut: stay.checkOut ? formatDate(stay.checkOut) : undefined,
-    guests,
+    occasion: stay.occasion || undefined,
+    people: guests,
     estimate: quote && issues.length === 0 ? money(quote.total) : undefined,
   })
 
@@ -55,13 +61,13 @@ export function BookingWidget({ property, stay, onChange, onEnquire }: { propert
           {quote ? (
             <>
               <span className="text-2xl font-bold text-ink">{money(Math.round(quote.accommodation / quote.nights))}</span>
-              <span className="text-sm text-muted"> / night avg.</span>
+              <span className="text-sm text-muted"> / night, whole place</span>
             </>
           ) : (
             <>
               <span className="text-sm text-muted">from </span>
               <span className="text-2xl font-bold text-ink">{money(fromPrice(property))}</span>
-              <span className="text-sm text-muted"> / night</span>
+              <span className="text-sm text-muted"> / night, whole place</span>
             </>
           )}
         </div>
@@ -96,20 +102,16 @@ export function BookingWidget({ property, stay, onChange, onEnquire }: { propert
             />
           </label>
         </div>
-        <button type="button" onClick={() => setGuestsOpen((o) => !o)} className="flex w-full items-center justify-between border-t border-line px-4 py-3 text-left" aria-expanded={guestsOpen}>
-          <span>
-            <span className="block text-[10px] font-bold uppercase tracking-[0.14em] text-ink/70">Guests</span>
-            <span className="text-sm font-medium">{stay.adults} adult{stay.adults > 1 ? 's' : ''}{stay.children ? `, ${stay.children} child${stay.children > 1 ? 'ren' : ''}` : ''}</span>
-          </span>
-          <ChevronDown className={classNames('h-4 w-4 transition', guestsOpen && 'rotate-180')} />
-        </button>
-        {guestsOpen && (
-          <div className="border-t border-line px-4">
-            <Stepper label="Adults" sub="Age 13+" value={stay.adults} min={1} max={property.maxGuests} onChange={(adults) => onChange({ ...stay, adults })} />
-            <Stepper label="Children" sub="Ages 2–12" value={stay.children} min={0} max={Math.max(0, property.maxGuests - 1)} onChange={(children) => onChange({ ...stay, children })} />
-            <p className="pb-3 text-xs text-muted">Sleeps up to {property.maxGuests}. Infants under 2 stay free.</p>
-          </div>
-        )}
+        <label className="block border-t border-line px-4 py-3">
+          <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-ink/70">What’s the plan?</span>
+          <select value={stay.occasion} onChange={(e) => onChange({ ...stay, occasion: e.target.value })} className="mt-0.5 block w-full cursor-pointer bg-transparent text-sm font-medium outline-none" aria-label="What’s the plan?">
+            <option value="">Choose one…</option>
+            {planOptions(property).map((o) => <option key={o} value={o}>{o}</option>)}
+          </select>
+        </label>
+        <div className="border-t border-line px-4">
+          <Stepper label="How many people?" sub={`Up to ${property.partyCapacity} · sleeps ${property.maxGuests}`} value={stay.people} min={1} max={property.partyCapacity} fastAbove={10} onChange={(people) => onChange({ ...stay, people })} />
+        </div>
       </div>
 
       {issues.length > 0 && (
@@ -119,7 +121,7 @@ export function BookingWidget({ property, stay, onChange, onEnquire }: { propert
       )}
 
       <Button variant="primary" size="lg" full className="mt-5" onClick={onEnquire}>
-        {stay.checkIn && stay.checkOut ? 'Enquire to book' : 'Check availability'}
+        {stay.checkIn && stay.checkOut ? 'Book this place' : 'Check your date'}
       </Button>
       <ButtonA href={wa(waMsg)} target="_blank" rel="noopener noreferrer" variant="outline" size="md" full className="mt-2.5" icon={<WhatsAppIcon className="h-4 w-4 text-whatsapp" />}>
         Ask on WhatsApp
@@ -129,7 +131,7 @@ export function BookingWidget({ property, stay, onChange, onEnquire }: { propert
           Book instantly on Airbnb
         </ButtonA>
       )}
-      <p className="mt-3 text-center text-xs text-muted">Enquiries are free. We’ll confirm availability with you first.</p>
+      <p className="mt-3 text-center text-xs text-muted">Enquiries are free. We’ll confirm your date with you first.</p>
 
       {quote && (
         <div className="mt-5 space-y-2.5 border-t border-line pt-5 text-sm">

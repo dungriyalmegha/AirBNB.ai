@@ -69,7 +69,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
     void refresh()
     // Keep multiple tabs in sync (e.g. admin in one tab, public site in another).
     const onStorage = (e: StorageEvent) => {
-      if (e.key?.startsWith('wss:v4:')) void refresh()
+      if (e.key?.startsWith('wss:v5:')) void refresh()
     }
     window.addEventListener('storage', onStorage)
     return () => window.removeEventListener('storage', onStorage)
@@ -141,8 +141,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
           email: e.email,
           checkIn: e.checkIn,
           checkOut: e.checkOut,
-          adults: e.adults,
-          children: e.children,
+          occasion: e.occasion,
+          groupSize: e.groupSize,
           priceLines: [{ label: 'Estimated total from enquiry', amount: e.estimatedTotal }],
           total: e.estimatedTotal,
           status: 'pending',

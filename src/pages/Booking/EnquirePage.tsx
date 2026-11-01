@@ -16,15 +16,15 @@ export function EnquirePage() {
   const properties = usePublishedProperties()
   const wa = useWhatsApp()
   const [selected, setSelected] = useState<Property | undefined>(properties.find((p) => p.slug === params.get('property')))
-  const [stay, setStay] = useState<Stay>({ checkIn: params.get('in') ?? '', checkOut: params.get('out') ?? '', adults: Math.max(1, Number(params.get('guests') ?? 2)), children: 0 })
+  const [stay, setStay] = useState<Stay>({ checkIn: params.get('in') ?? '', checkOut: params.get('out') ?? '', people: Math.max(1, Number(params.get('people') ?? 10)), occasion: params.get('plan') ?? '' })
 
   return (
     <div className="container-page pt-32">
       <div className="grid gap-12 lg:grid-cols-[1fr_380px]">
         <div>
           <p className="eyebrow mb-3">Booking enquiry</p>
-          <h1 className="font-display text-5xl font-semibold leading-none text-forest sm:text-6xl">Tell us about your stay</h1>
-          <p className="mb-8 mt-4 max-w-xl text-ink/70">Share your dates and we’ll confirm availability and the final price. It only takes a minute.</p>
+          <h1 className="font-display text-5xl font-semibold leading-none text-forest sm:text-6xl">Tell us the plan</h1>
+          <p className="mb-8 mt-4 max-w-xl text-ink/70">Pick a place, a date and roughly how many of you are coming. We’ll confirm it’s free and send the final price.</p>
           <EnquiryForm property={selected} allowPropertyChange stay={stay} onStayChange={setStay} onPropertyChange={setSelected} />
         </div>
         <aside className="space-y-5 lg:pt-28">

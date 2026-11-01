@@ -1,4 +1,4 @@
-import { Bath, BedDouble, ChevronRight, Clock, DoorOpen, Home, Landmark, MapPin, ScrollText, Share2, Sparkles, Users } from 'lucide-react'
+import { BedDouble, ChevronRight, Clock, DoorOpen, Home, KeyRound, Landmark, MapPin, PartyPopper, ScrollText, Share2, Sparkles } from 'lucide-react'
 import { useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { AmenityIcon } from '../../components/AmenityIcon'
@@ -6,6 +6,7 @@ import { AvailabilityCalendar } from '../../components/AvailabilityCalendar'
 import { BookingWidget, useStayQuote, type Stay } from '../../components/BookingWidget'
 import { EnquiryForm } from '../../components/EnquiryForm'
 import { Gallery } from '../../components/Gallery'
+import { OccasionIcon } from '../../components/OccasionIcon'
 import { PropertyCard } from '../../components/PropertyCard'
 import { ButtonA, ButtonLink } from '../../components/ui/Button'
 import { EmptyState } from '../../components/ui/EmptyState'
@@ -17,6 +18,7 @@ import { useDocumentTitle } from '../../hooks/useDocumentTitle'
 import { useMoney } from '../../hooks/useMoney'
 import { useWhatsApp } from '../../hooks/useWhatsApp'
 import { formatDate, formatTime } from '../../utils/dates'
+import { classNames } from '../../utils/format'
 import { fromPrice } from '../../utils/pricing'
 import { enquiryMessage } from '../../utils/whatsapp'
 
@@ -37,12 +39,13 @@ function PropertyDetails({ slug }: { slug: string }) {
   const toast = useToast()
   const [amenitiesOpen, setAmenitiesOpen] = useState(false)
 
-  const guestsParam = Number(params.get('guests') ?? 2)
+  const peopleParam = Number(params.get('people') ?? 0)
+  const planParam = params.get('plan') ?? ''
   const [stay, setStay] = useState<Stay>({
     checkIn: params.get('in') ?? '',
     checkOut: params.get('out') ?? '',
-    adults: Math.max(1, Math.min(guestsParam || 2, property?.maxGuests ?? 2)),
-    children: 0,
+    people: Math.max(1, Math.min(peopleParam || Math.min(10, property?.partyCapacity ?? 10), property?.partyCapacity ?? 10)),
+    occasion: planParam,
   })
   const { quote, issues, guests } = useStayQuote(property, stay)
 
@@ -70,7 +73,8 @@ function PropertyDetails({ slug }: { slug: string }) {
     propertyName: property.name,
     checkIn: stay.checkIn ? formatDate(stay.checkIn) : undefined,
     checkOut: stay.checkOut ? formatDate(stay.checkOut) : undefined,
-    guests,
+    occasion: stay.occasion || undefined,
+    people: guests,
     estimate: quote && !issues.length ? money(quote.total) : undefined,
   })
   const p = property.pricing
@@ -81,7 +85,7 @@ function PropertyDetails({ slug }: { slug: string }) {
       <div className="container-page">
         <nav className="flex items-center gap-1.5 py-4 text-xs text-muted" aria-label="Breadcrumb">
           <Link to="/" className="hover:text-forest">Home</Link><ChevronRight className="h-3 w-3" />
-          <Link to="/stays" className="hover:text-forest">Stays</Link><ChevronRight className="h-3 w-3" />
+          <Link to="/stays" className="hover:text-forest">Places</Link><ChevronRight className="h-3 w-3" />
           <span className="text-ink/70">{property.name}</span>
         </nav>
 
@@ -105,16 +109,30 @@ function PropertyDetails({ slug }: { slug: string }) {
               <h2 className="font-display text-3xl font-semibold text-forest">{property.tagline}</h2>
               <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
                 {[
-                  { Icon: Users, label: `${property.maxGuests} guests` },
-                  { Icon: DoorOpen, label: `${property.bedrooms} bedrooms` },
-                  { Icon: BedDouble, label: `${property.beds} beds` },
-                  { Icon: Bath, label: `${property.bathrooms} bathrooms` },
+                  { Icon: KeyRound, label: 'Whole place' },
+                  { Icon: PartyPopper, label: `Up to ${property.partyCapacity} people` },
+                  { Icon: BedDouble, label: `Sleeps ${property.maxGuests}` },
+                  { Icon: DoorOpen, label: `${property.bedrooms} bedroom${property.bedrooms === 1 ? '' : 's'}` },
                 ].map(({ Icon, label }) => (
                   <div key={label} className="flex items-center gap-3 rounded-2xl bg-white p-4 shadow-soft">
                     <Icon className="h-5 w-5 text-olive" /><span className="text-sm font-semibold">{label}</span>
                   </div>
                 ))}
               </div>
+              {property.occasions.length > 0 && (
+                <div className="mt-6">
+                  <h3 className="text-xs font-semibold uppercase tracking-[0.18em] text-ink/60">Perfect for</h3>
+                  <ul className="mt-3 flex flex-wrap gap-2">
+                    {property.occasions.map((o) => (
+                      <li key={o}>
+                        <button type="button" onClick={() => setStay({ ...stay, occasion: o })} aria-pressed={stay.occasion === o} className={classNames('flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold ring-1 transition', stay.occasion === o ? 'bg-forest text-ivory ring-forest' : 'bg-white text-ink ring-line hover:ring-forest/40')}>
+                          <OccasionIcon name={o} className="h-4 w-4 text-accent" /> {o}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
               <div className="prose-stay mt-8 leading-relaxed text-ink/80">
                 {property.description.split(/\n\s*\n/).map((para, i) => <p key={i}>{para}</p>)}
               </div>
@@ -123,7 +141,7 @@ function PropertyDetails({ slug }: { slug: string }) {
             {/* Highlights */}
             {property.highlights.length > 0 && (
               <section className="border-b border-line py-10">
-                <h2 className="font-display text-3xl font-semibold text-forest">What makes it special</h2>
+                <h2 className="font-display text-3xl font-semibold text-forest">Why people book it</h2>
                 <ul className="mt-6 grid gap-4 sm:grid-cols-2">
                   {property.highlights.map((h) => (
                     <li key={h} className="flex gap-3"><Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-accent" /><span className="text-ink/80">{h}</span></li>
@@ -134,7 +152,7 @@ function PropertyDetails({ slug }: { slug: string }) {
 
             {/* Amenities */}
             <section className="border-b border-line py-10">
-              <h2 className="font-display text-3xl font-semibold text-forest">Amenities</h2>
+              <h2 className="font-display text-3xl font-semibold text-forest">What’s in the place</h2>
               <ul className="mt-6 grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3">
                 {property.amenities.slice(0, 9).map((a) => (
                   <li key={a} className="flex items-center gap-3 text-ink/80"><AmenityIcon name={a} className="h-5 w-5 text-olive" /> {a}</li>
@@ -142,10 +160,10 @@ function PropertyDetails({ slug }: { slug: string }) {
               </ul>
               {property.amenities.length > 9 && (
                 <button onClick={() => setAmenitiesOpen(true)} className="mt-6 rounded-full border border-forest/25 px-5 py-2.5 text-sm font-semibold text-forest hover:border-forest">
-                  Show all {property.amenities.length} amenities
+                  Show all {property.amenities.length}
                 </button>
               )}
-              <Modal open={amenitiesOpen} onClose={() => setAmenitiesOpen(false)} title="All amenities">
+              <Modal open={amenitiesOpen} onClose={() => setAmenitiesOpen(false)} title="What’s in the place">
                 <ul className="grid gap-4 sm:grid-cols-2">
                   {property.amenities.map((a) => <li key={a} className="flex items-center gap-3"><AmenityIcon name={a} className="h-5 w-5 text-olive" /> {a}</li>)}
                 </ul>
@@ -158,7 +176,7 @@ function PropertyDetails({ slug }: { slug: string }) {
               <p className="mt-2 text-sm text-muted">
                 {stay.checkIn && stay.checkOut
                   ? `${formatDate(stay.checkIn)} – ${formatDate(stay.checkOut)}${quote ? ` · ${quote.nights} night${quote.nights > 1 ? 's' : ''}` : ''}`
-                  : stay.checkIn ? 'Now choose your check-out date.' : 'Select your check-in date to see your price.'}
+                  : stay.checkIn ? 'Now choose your check-out date.' : 'Pick your date to see the price for the whole place.'}
               </p>
               <div className="mt-6 rounded-3xl bg-white p-5 shadow-soft sm:p-7">
                 <AvailabilityCalendar property={property} checkIn={stay.checkIn} checkOut={stay.checkOut} onChange={(checkIn, checkOut) => setStay({ ...stay, checkIn, checkOut })} />
@@ -168,7 +186,7 @@ function PropertyDetails({ slug }: { slug: string }) {
             {/* Rules & timings */}
             <section className="grid gap-10 border-b border-line py-10 sm:grid-cols-2">
               <div>
-                <h2 className="flex items-center gap-2 font-display text-3xl font-semibold text-forest"><ScrollText className="h-6 w-6 text-olive" /> House rules</h2>
+                <h2 className="flex items-center gap-2 font-display text-3xl font-semibold text-forest"><ScrollText className="h-6 w-6 text-olive" /> Party & house rules</h2>
                 <ul className="mt-5 space-y-3 text-ink/80">
                   {property.houseRules.map((r) => <li key={r} className="flex gap-3"><span className="mt-2.5 h-1 w-1 shrink-0 rounded-full bg-accent" />{r}</li>)}
                 </ul>
@@ -214,12 +232,13 @@ function PropertyDetails({ slug }: { slug: string }) {
 
             {/* Pricing */}
             <section className="border-b border-line py-10">
-              <h2 className="font-display text-3xl font-semibold text-forest">Pricing</h2>
+              <h2 className="font-display text-3xl font-semibold text-forest">Pricing for the whole place</h2>
               <div className="mt-6 divide-y divide-line overflow-hidden rounded-3xl bg-white shadow-soft">
                 {[
                   ['Weeknight (Sun–Thu)', money(p.basePrice)],
                   ['Weekend night (Fri & Sat)', money(p.weekendPrice || p.basePrice)],
-                  [`Extra guest (above ${p.includedGuests})`, p.extraGuestFee ? `${money(p.extraGuestFee)} / guest / night` : 'Included'],
+                  [`People included`, `Up to ${p.includedGuests}`],
+                  ...(p.extraGuestFee ? [[`Each extra person`, `${money(p.extraGuestFee)} / night`]] : []),
                   ['Cleaning fee', p.cleaningFee ? `${money(p.cleaningFee)} per stay` : 'Included'],
                   ['Minimum stay', `${p.minNights} night${p.minNights > 1 ? 's' : ''}`],
                   ...p.seasonal.map((s) => [`${s.label} (${formatDate(s.start, { day: 'numeric', month: 'short' })} – ${formatDate(s.end, { day: 'numeric', month: 'short' })})`, `${money(s.pricePerNight)} / night`]),
@@ -233,8 +252,8 @@ function PropertyDetails({ slug }: { slug: string }) {
             {/* Enquiry */}
             <section id="enquire" className="scroll-mt-28 py-10">
               <p className="eyebrow mb-2">Request to book</p>
-              <h2 className="font-display text-4xl font-semibold text-forest">Send us an enquiry</h2>
-              <p className="mt-2 mb-6 text-ink/70">Share your details and we’ll confirm availability, usually within a few hours. Prefer to chat? <a href={wa(waMsg)} target="_blank" rel="noopener noreferrer" className="link-underline font-semibold text-forest">Message us on WhatsApp</a>.</p>
+              <h2 className="font-display text-4xl font-semibold text-forest">Tell us the plan</h2>
+              <p className="mt-2 mb-6 text-ink/70">Your date, the occasion and roughly how many of you. We’ll confirm it’s free, usually within a few hours. Prefer to chat? <a href={wa(waMsg)} target="_blank" rel="noopener noreferrer" className="link-underline font-semibold text-forest">Message us on WhatsApp</a>.</p>
               <EnquiryForm property={property} stay={stay} onStayChange={setStay} />
             </section>
           </div>
@@ -249,7 +268,7 @@ function PropertyDetails({ slug }: { slug: string }) {
 
         {others.length > 0 && (
           <section className="border-t border-line py-16">
-            <h2 className="mb-8 font-display text-4xl font-semibold text-forest">You might also love</h2>
+            <h2 className="mb-8 font-display text-4xl font-semibold text-forest">More places for your plan</h2>
             <div className="grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
               {others.map((o) => <PropertyCard key={o.id} property={o} />)}
             </div>
@@ -268,14 +287,14 @@ function PropertyDetails({ slug }: { slug: string }) {
               </>
             ) : (
               <>
-                <div className="text-base font-bold">{money(fromPrice(property))} <span className="text-xs font-normal text-muted">/ night</span></div>
-                <div className="text-xs font-semibold text-forest underline underline-offset-2">Check availability</div>
+                <div className="text-base font-bold">{money(fromPrice(property))} <span className="text-xs font-normal text-muted">/ night, whole place</span></div>
+                <div className="text-xs font-semibold text-forest underline underline-offset-2">Check your date</div>
               </>
             )}
           </button>
           <div className="flex gap-2">
             <ButtonA href={wa(waMsg)} target="_blank" rel="noopener noreferrer" variant="whatsapp" className="!px-3.5" aria-label="Enquire on WhatsApp" icon={<WhatsAppIcon />} />
-            <button onClick={onEnquire} className="h-11 rounded-full bg-forest px-6 text-sm font-semibold text-ivory">Enquire</button>
+            <button onClick={onEnquire} className="h-11 rounded-full bg-forest px-6 text-sm font-semibold text-ivory">Book it</button>
           </div>
         </div>
       </div>

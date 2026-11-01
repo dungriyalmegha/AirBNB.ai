@@ -8,6 +8,10 @@ export type ISODate = string
 export const PROPERTY_TYPES = ['Studio', 'Apartment', 'Serviced apartment', 'Penthouse', 'Independent floor', 'Villa'] as const
 export type PropertyType = (typeof PROPERTY_TYPES)[number]
 
+/** What guests rent the whole place for. Drives the homepage tiles, search and filters. */
+export const OCCASIONS = ['House party', 'Birthday', 'Office party', 'Get-together', 'Movie night', 'Date night', 'Staycation'] as const
+export type Occasion = (typeof OCCASIONS)[number]
+
 export interface PropertyImage {
   id: ID
   url: string
@@ -27,9 +31,9 @@ export interface PropertyPricing {
   /** Applies to Friday and Saturday nights. 0 or empty = same as base. */
   weekendPrice: number
   seasonal: SeasonalPrice[]
-  /** Guests included in the nightly price. */
+  /** People included in the nightly price. */
   includedGuests: number
-  /** Per extra guest, per night, above includedGuests. */
+  /** Per extra person, per night, above includedGuests. */
   extraGuestFee: number
   /** One-time cleaning fee per stay. */
   cleaningFee: number
@@ -52,6 +56,11 @@ export interface Property {
   shortDescription: string
   description: string
   images: PropertyImage[]
+  /** What this place is good for. */
+  occasions: Occasion[]
+  /** Most people allowed for a party or get-together. */
+  partyCapacity: number
+  /** Most people who can stay overnight. */
   maxGuests: number
   bedrooms: number
   beds: number
@@ -119,8 +128,10 @@ export interface Enquiry {
   email: string
   checkIn: ISODate
   checkOut: ISODate
-  adults: number
-  children: number
+  /** What the group is planning, e.g. "Birthday". Empty for a plain stay. */
+  occasion: string
+  /** How many people in total. */
+  groupSize: number
   specialRequests: string
   estimatedTotal: number
   status: EnquiryStatus
@@ -144,8 +155,8 @@ export interface Booking {
   email: string
   checkIn: ISODate
   checkOut: ISODate
-  adults: number
-  children: number
+  occasion: string
+  groupSize: number
   priceLines: PriceLine[]
   total: number
   status: BookingStatus

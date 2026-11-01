@@ -1,6 +1,6 @@
-# AirBNB.ai: boutique stays in Gurgaon
+# Thikana: whole flats for parties and stays in Gurgaon
 
-A premium, owner-run short-stay site for a few homes in Gurgaon (near DLF Cyber City, Golf Course Road and Sector 29) with a public booking-enquiry website and a separate owner dashboard at `/admin`.
+An owner-run site for a few Gurgaon flats that guests rent **whole**: for house parties, birthdays, office nights, get-togethers, movie or date nights, or a plain staycation. It is deliberately not a hotel-booking app: there are no rooms or adult/child counts, just the plan and how many people are coming. Public website plus a separate owner dashboard at `/admin`.
 Built with React, TypeScript, Tailwind CSS v4, React Router and Lucide icons on Vite.
 
 > **This is a frontend-only prototype.** Data is saved in the browser's localStorage and the admin login is a demo. See "Before going live" below.
@@ -20,14 +20,21 @@ When deploying the static build (Netlify, Vercel, Cloudflare Pages…), add an S
 
 ## What's included
 
+### Parties and whole-place rentals
+- Each place has **"Good for"** occasions (House party, Birthday, Office party, Get-together, Movie night, Date night, Staycation), a **party capacity** (people for an event) and a separate **sleeps** number. Set them in Admin → Properties → edit.
+- Search and filters use **the plan** and **how many people**. A Staycation search checks the overnight number; every other plan checks the party capacity.
+- Prices are for the whole place per night. "People included" and "Each extra person / night" let you charge for big groups.
+- Enquiries, bookings and the pre-filled WhatsApp message carry the plan and group size.
+- Homepage: rotating hero line, occasion marquee, "What are we celebrating?" tiles, How it works and "The friendly rules" (edit these in `src/data/gurgaon.ts` to match your real rules, deposit and music hours).
+
 ### Gurgaon focus and Airbnb
 - **Homepage photo**: meant to be DLF Cyber City Building 9A & 9B. Upload your own photo in Admin → Settings → Homepage photo (a placeholder glass-tower image is used until then). Only use photos you took or have permission to use.
-- **Airbnb links**: each property has an optional Airbnb listing link (Admin → Properties → edit → Airbnb listing). When set, cards show "Also on Airbnb" and a "Book on Airbnb" button, and the property page shows "Book instantly on Airbnb" with the guest's dates and guest count passed through.
+- **Airbnb links**: each property has an optional Airbnb listing link (Admin → Properties → edit → Airbnb listing). When set, cards show "Also on Airbnb" and a "Book on Airbnb" button, and the property page shows "Book instantly on Airbnb" with the guest's dates passed through (group size isn't, as party headcounts exceed Airbnb's overnight limit).
 - **Layout ideas from cozycozy**: stay-type tiles under the hero, a listing grid with promo banners, neighbourhood tiles, an FAQ accordion, "Find a stay near…" link clusters (Cyber Hub, Building 9A & 9B, Golf Course Road, the airport…), saved stays (heart icon) and an app-style bottom tab bar on phones.
 - Local content (areas, landmarks, FAQs) lives in `src/data/gurgaon.ts`. The three sample homes in `src/data/properties.ts` are placeholders; replace them with your real listings from the admin.
 
 ### Public website
-- **Home**: full-screen hero, search (destination, dates, guests), featured homes, why book with us, experiences, testimonials (clearly labelled as samples), a "plan ahead" section that only uses real availability and real seasonal prices, footer with contact, WhatsApp, socials and policies.
+- **Home**: full-screen hero, search (area, dates, plan, people), featured homes, why book with us, experiences, testimonials (clearly labelled as samples), a "plan ahead" section that only uses real availability and real seasonal prices, footer with contact, WhatsApp, socials and policies.
 - **Explore stays** (`/stays`): search by destination, filter by guests, max price and property type, sort by featured / price / capacity. When dates are chosen, each card shows whether it's free for those dates and the estimated total. Every card shows open nights in the next 30 days, straight from the calendar.
 - **Property page** (`/stays/:slug`): mosaic gallery, thumbnails and full-screen lightbox (keyboard + swipe), overview, description, highlights, amenities with icons, live availability calendar (pick check-in/out; booked or blocked nights can't be selected), house rules, check-in/out times, map + nearby attractions, full pricing table, enquiry form, sticky booking card on desktop and sticky enquire bar on mobile.
 - **Pricing engine** (`src/utils/pricing.ts`): per-night price with priority *special date price → seasonal price → weekend (Fri/Sat) → base*, plus extra-guest fees above the included guests and a one-time cleaning fee, all shown as separate lines.

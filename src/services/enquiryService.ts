@@ -9,7 +9,7 @@ const write = (list: Enquiry[]) => storage.write(KEYS.enquiries, list)
 
 export type EnquiryInput = Pick<
   Enquiry,
-  'propertyId' | 'propertyName' | 'fullName' | 'phone' | 'email' | 'checkIn' | 'checkOut' | 'adults' | 'children' | 'specialRequests' | 'estimatedTotal'
+  'propertyId' | 'propertyName' | 'fullName' | 'phone' | 'email' | 'checkIn' | 'checkOut' | 'occasion' | 'groupSize' | 'specialRequests' | 'estimatedTotal'
 >
 
 export const enquiryService = {

@@ -11,7 +11,7 @@ import { WhatsAppIcon } from './ui/WhatsAppIcon'
 
 const links = [
   { to: '/', label: 'Home', end: true },
-  { to: '/stays', label: 'Explore stays' },
+  { to: '/stays', label: 'Find a place' },
   { to: '/about', label: 'About us' },
   { to: '/contact', label: 'Contact' },
 ]
@@ -65,13 +65,13 @@ export function Navbar() {
           ))}
         </ul>
         <div className="flex items-center gap-2">
-          <Link to="/saved" aria-label={`Saved stays (${saved.length})`} className={classNames('relative hidden rounded-full p-2.5 transition sm:block', transparent ? 'text-ivory hover:bg-white/10' : 'text-forest hover:bg-cream')}>
+          <Link to="/saved" aria-label={`Saved places (${saved.length})`} className={classNames('relative hidden rounded-full p-2.5 transition sm:block', transparent ? 'text-ivory hover:bg-white/10' : 'text-forest hover:bg-cream')}>
             <Heart className="h-5 w-5" />
             {saved.length > 0 && <span className="absolute right-1 top-1 rounded-full bg-[#ff385c] px-1 text-[9px] font-bold leading-[14px] text-white">{saved.length}</span>}
           </Link>
           <div className="hidden md:block">
             <ButtonA
-            href={wa('Hello! I’d like to know more about your stays.')}
+            href={wa('Hi! I’d like to book one of your places in Gurgaon.')}
             target="_blank"
             rel="noopener noreferrer"
             variant={transparent ? 'light' : 'whatsapp'}
@@ -107,7 +107,7 @@ export function Navbar() {
               </li>
             ))}
           </ul>
-          <ButtonA href={wa('Hello! I’d like to know more about your stays.')} target="_blank" rel="noopener noreferrer" variant="whatsapp" size="lg" full className="mt-8" icon={<WhatsAppIcon />}>
+          <ButtonA href={wa('Hi! I’d like to book one of your places in Gurgaon.')} target="_blank" rel="noopener noreferrer" variant="whatsapp" size="lg" full className="mt-8" icon={<WhatsAppIcon />}>
             Chat on WhatsApp
           </ButtonA>
         </div>

@@ -10,12 +10,13 @@ import { SmartImage } from '../../components/ui/SmartImage'
 import { useData } from '../../context/DataContext'
 import { useToast } from '../../context/ToastContext'
 import type { PropertyInput } from '../../services/propertyService'
-import { PROPERTY_TYPES, type NearbyAttraction, type Property, type PropertyType, type SeasonalPrice } from '../../types'
+import { OCCASIONS, PROPERTY_TYPES, type NearbyAttraction, type Property, type PropertyType, type SeasonalPrice } from '../../types'
 import { isValidUrl } from '../../utils/airbnb'
 import { classNames, uid } from '../../utils/format'
 import { fileToCompressedDataUrl } from '../../utils/image'
 
 const COMMON_AMENITIES = [
+  'Sound system', 'Bluetooth speaker', 'Party lights', 'Projector', 'Private terrace', 'Space for a DJ', 'Mood lighting',
   'Wi-Fi', 'Air conditioning', 'Workspace', 'Kitchen', 'Power backup', 'Free parking', 'Lift', 'Security', 'Swimming pool', 'Gym', 'Balcony',
   'Smart TV', 'Washing machine', 'Housekeeping', 'Self check-in', 'Hot water', 'Heating', 'Garden', 'City view', 'Breakfast (on request)', 'Pet friendly',
 ]
@@ -23,9 +24,10 @@ const COMMON_AMENITIES = [
 function blank(defaults: { checkIn: string; checkOut: string }): PropertyInput {
   return {
     name: '', type: 'Apartment', location: '', region: '', tagline: '', shortDescription: '', description: '', images: [],
-    maxGuests: 2, bedrooms: 1, beds: 1, bathrooms: 1, amenities: ['Wi-Fi', 'Air conditioning', 'Power backup'], highlights: [], houseRules: ['No smoking indoors', 'No parties or events'],
+    occasions: ['House party', 'Birthday', 'Get-together', 'Staycation'], partyCapacity: 15,
+    maxGuests: 4, bedrooms: 2, beds: 2, bathrooms: 2, amenities: ['Sound system', 'Wi-Fi', 'Air conditioning', 'Power backup'], highlights: [], houseRules: ['Keep music at a friendly volume after 10 pm', 'No smoking indoors', 'The person booking must be 18+ and share a photo ID', 'Refundable security deposit for parties'],
     checkInTime: defaults.checkIn, checkOutTime: defaults.checkOut, locationInfo: '', mapQuery: '', nearby: [],
-    pricing: { basePrice: 0, weekendPrice: 0, seasonal: [], includedGuests: 2, extraGuestFee: 0, cleaningFee: 0, minNights: 1 },
+    pricing: { basePrice: 0, weekendPrice: 0, seasonal: [], includedGuests: 10, extraGuestFee: 0, cleaningFee: 0, minNights: 1 },
     airbnbUrl: '', featured: false, published: false,
   }
 }
@@ -67,6 +69,8 @@ function Editor({ existing, initial, save }: { existing?: Property; initial: Pro
     if (!f.shortDescription.trim()) e.shortDescription = 'Add a one or two line summary'
     if (!(f.pricing.basePrice > 0)) e.basePrice = 'Enter a nightly price'
     if (f.maxGuests < 1) e.maxGuests = 'At least 1 guest'
+    if (f.partyCapacity < f.maxGuests) e.partyCapacity = 'Should be at least the overnight number'
+    if (!f.occasions.length) e.occasions = 'Pick at least one'
     if (f.pricing.includedGuests < 1) e.includedGuests = 'At least 1'
     if (f.pricing.minNights < 1) e.minNights = 'At least 1 night'
     f.pricing.seasonal.forEach((s, i) => {
@@ -139,9 +143,26 @@ function Editor({ existing, initial, save }: { existing?: Property; initial: Pro
 
           <PhotosPanel images={f.images} onChange={(images) => set('images', images)} error={errors.images} name={f.name} />
 
+          <Panel title="Good for">
+            <p className="mb-3 text-sm text-muted">Pick the plans this place suits. Guests can search and filter by these.</p>
+            <div className="flex flex-wrap gap-2">
+              {OCCASIONS.map((o) => {
+                const on = f.occasions.includes(o)
+                return (
+                  <button key={o} type="button" aria-pressed={on} onClick={() => set('occasions', on ? f.occasions.filter((x) => x !== o) : [...f.occasions, o])}
+                    className={classNames('rounded-full px-4 py-2 text-sm font-semibold ring-1 transition', on ? 'bg-forest text-ivory ring-forest' : 'bg-white text-ink/70 ring-line hover:ring-forest/40')}>
+                    {o}
+                  </button>
+                )
+              })}
+            </div>
+            {errors.occasions && <p className="mt-2 text-xs font-medium text-[#a8432f]">{errors.occasions}</p>}
+          </Panel>
+
           <Panel title="Capacity">
-            <div className="grid grid-cols-2 gap-5 sm:grid-cols-4">
-              <TextField id="maxGuests" label="Max guests" type="number" min={1} value={f.maxGuests} onChange={(e) => set('maxGuests', num(e.target.value))} error={errors.maxGuests} />
+            <div className="grid grid-cols-2 gap-5 sm:grid-cols-5">
+              <TextField id="partyCapacity" label="People for a party" type="number" min={1} value={f.partyCapacity} onChange={(e) => set('partyCapacity', num(e.target.value))} error={errors.partyCapacity} />
+              <TextField id="maxGuests" label="Sleeps (overnight)" type="number" min={1} value={f.maxGuests} onChange={(e) => set('maxGuests', num(e.target.value))} error={errors.maxGuests} />
               <TextField id="bedrooms" label="Bedrooms" type="number" min={0} value={f.bedrooms} onChange={(e) => set('bedrooms', num(e.target.value))} />
               <TextField id="beds" label="Beds" type="number" min={0} value={f.beds} onChange={(e) => set('beds', num(e.target.value))} />
               <TextField id="bathrooms" label="Bathrooms" type="number" min={0} step={0.5} value={f.bathrooms} onChange={(e) => set('bathrooms', num(e.target.value))} />
@@ -153,8 +174,8 @@ function Editor({ existing, initial, save }: { existing?: Property; initial: Pro
               <TextField id="basePrice" label={`Base nightly (${settings.currency})`} type="number" min={0} value={f.pricing.basePrice || ''} onChange={(e) => setPrice('basePrice', num(e.target.value))} error={errors.basePrice} />
               <TextField id="weekendPrice" label="Weekend nightly" type="number" min={0} value={f.pricing.weekendPrice || ''} onChange={(e) => setPrice('weekendPrice', num(e.target.value))} hint="Fri & Sat. Empty = base" />
               <TextField id="cleaningFee" label="Cleaning fee (per stay)" type="number" min={0} value={f.pricing.cleaningFee || ''} onChange={(e) => setPrice('cleaningFee', num(e.target.value))} />
-              <TextField id="includedGuests" label="Guests included" type="number" min={1} value={f.pricing.includedGuests} onChange={(e) => setPrice('includedGuests', num(e.target.value))} error={errors.includedGuests} />
-              <TextField id="extraGuestFee" label="Extra guest / night" type="number" min={0} value={f.pricing.extraGuestFee || ''} onChange={(e) => setPrice('extraGuestFee', num(e.target.value))} />
+              <TextField id="includedGuests" label="People included" type="number" min={1} value={f.pricing.includedGuests} onChange={(e) => setPrice('includedGuests', num(e.target.value))} error={errors.includedGuests} />
+              <TextField id="extraGuestFee" label="Each extra person / night" type="number" min={0} value={f.pricing.extraGuestFee || ''} onChange={(e) => setPrice('extraGuestFee', num(e.target.value))} />
               <TextField id="minNights" label="Minimum nights" type="number" min={1} value={f.pricing.minNights} onChange={(e) => setPrice('minNights', num(e.target.value))} error={errors.minNights} />
             </div>
             <div className="mt-6">
@@ -224,7 +245,7 @@ function Editor({ existing, initial, save }: { existing?: Property; initial: Pro
             </Panel>
             <Panel title="Airbnb listing">
               <TextField id="airbnbUrl" label="Airbnb link (optional)" value={f.airbnbUrl ?? ''} error={errors.airbnbUrl} onChange={(e) => set('airbnbUrl', e.target.value)} placeholder="https://www.airbnb.co.in/rooms/…"
-                hint="Adds a “Book on Airbnb” button. Guests’ dates and guest count are passed to Airbnb." />
+                hint="Adds a “Book on Airbnb” button. Guests’ dates are passed to Airbnb." />
             </Panel>
             <Panel title="Check-in & check-out">
               <div className="grid grid-cols-2 gap-4">

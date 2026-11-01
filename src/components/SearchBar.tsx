@@ -1,20 +1,23 @@
-import { CalendarDays, MapPin, Search, Users } from 'lucide-react'
+import { CalendarDays, MapPin, PartyPopper, Search, Users } from 'lucide-react'
 import { useMemo, useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { usePublishedProperties } from '../context/DataContext'
 import { stayNear } from '../data/gurgaon'
+import { GROUP_SIZES } from '../data/occasions'
+import { OCCASIONS } from '../types'
 import { addDays, today } from '../utils/dates'
 import { classNames } from '../utils/format'
 import { Button } from './ui/Button'
 
-export interface SearchValues { where: string; checkIn: string; checkOut: string; guests: number }
+export interface SearchValues { where: string; checkIn: string; checkOut: string; plan: string; people: number }
 
 export function searchToQuery(v: Partial<SearchValues>): string {
   const q = new URLSearchParams()
   if (v.where) q.set('where', v.where)
   if (v.checkIn) q.set('in', v.checkIn)
   if (v.checkOut) q.set('out', v.checkOut)
-  if (v.guests && v.guests > 0) q.set('guests', String(v.guests))
+  if (v.plan) q.set('plan', v.plan)
+  if (v.people && v.people > 0) q.set('people', String(v.people))
   const s = q.toString()
   return s ? `?${s}` : ''
 }
@@ -22,7 +25,7 @@ export function searchToQuery(v: Partial<SearchValues>): string {
 export function SearchBar({ initial, variant = 'hero', onSearch }: { initial?: Partial<SearchValues>; variant?: 'hero' | 'inline'; onSearch?: (v: SearchValues) => void }) {
   const properties = usePublishedProperties()
   const navigate = useNavigate()
-  const [v, setV] = useState<SearchValues>({ where: '', checkIn: '', checkOut: '', guests: 2, ...initial })
+  const [v, setV] = useState<SearchValues>({ where: '', checkIn: '', checkOut: '', plan: '', people: 0, ...initial })
   const [error, setError] = useState('')
 
   const options = useMemo(() => {
@@ -51,13 +54,13 @@ export function SearchBar({ initial, variant = 'hero', onSearch }: { initial?: P
         variant === 'hero' ? 'p-2 shadow-lift' : 'border border-line p-2 shadow-soft',
       )}
       role="search"
-      aria-label="Search stays"
+      aria-label="Search places"
     >
-      <div className="grid grid-cols-2 gap-y-1 md:grid-cols-[1.4fr_1fr_1fr_0.8fr_auto] md:items-center md:divide-x md:divide-line">
-        <label className={classNames(cell, 'col-span-2 md:col-span-1')}>
+      <div className="grid grid-cols-2 gap-y-1 lg:grid-cols-[1.25fr_1fr_1fr_1.1fr_1fr_auto] lg:items-center lg:divide-x lg:divide-line">
+        <label className={classNames(cell, 'col-span-2 lg:col-span-1')}>
           <span className={label}><MapPin className="h-3.5 w-3.5" /> Where in Gurgaon</span>
           <select value={v.where} onChange={(e) => setV({ ...v, where: e.target.value })} className={classNames(input, 'cursor-pointer appearance-none')}>
-            <option value="">All of Gurgaon</option>
+            <option value="">Anywhere in Gurgaon</option>
             <optgroup label="Areas of Gurgaon">
               {options.regions.map((r) => <option key={r} value={r}>{r}</option>)}
             </optgroup>
@@ -70,31 +73,39 @@ export function SearchBar({ initial, variant = 'hero', onSearch }: { initial?: P
           </select>
         </label>
         <label className={cell}>
-          <span className={label}><CalendarDays className="h-3.5 w-3.5" /> Check-in</span>
+          <span className={label}><CalendarDays className="h-3.5 w-3.5" /> From</span>
           <input
             type="date"
             min={today()}
             value={v.checkIn}
             onChange={(e) => {
               const checkIn = e.target.value
-              setV((s) => ({ ...s, checkIn, checkOut: s.checkOut && s.checkOut > checkIn ? s.checkOut : checkIn ? addDays(checkIn, 2) : '' }))
+              setV((s) => ({ ...s, checkIn, checkOut: s.checkOut && s.checkOut > checkIn ? s.checkOut : checkIn ? addDays(checkIn, 1) : '' }))
             }}
             className={input}
             aria-label="Check-in date"
           />
         </label>
         <label className={cell}>
-          <span className={label}><CalendarDays className="h-3.5 w-3.5" /> Check-out</span>
+          <span className={label}><CalendarDays className="h-3.5 w-3.5" /> To</span>
           <input type="date" min={v.checkIn ? addDays(v.checkIn, 1) : addDays(today(), 1)} value={v.checkOut} onChange={(e) => setV({ ...v, checkOut: e.target.value })} className={input} aria-label="Check-out date" />
         </label>
-        <label className={classNames(cell, 'col-span-2 md:col-span-1')}>
-          <span className={label}><Users className="h-3.5 w-3.5" /> Guests</span>
-          <select value={v.guests} onChange={(e) => setV({ ...v, guests: Number(e.target.value) })} className={classNames(input, 'cursor-pointer appearance-none')}>
-            {Array.from({ length: 12 }, (_, n) => n + 1).map((n) => <option key={n} value={n}>{n} guest{n > 1 ? 's' : ''}</option>)}
+        <label className={cell}>
+          <span className={label}><PartyPopper className="h-3.5 w-3.5" /> The plan</span>
+          <select value={v.plan} onChange={(e) => setV({ ...v, plan: e.target.value })} className={classNames(input, 'cursor-pointer appearance-none')}>
+            <option value="">Anything</option>
+            {OCCASIONS.map((o) => <option key={o} value={o}>{o}</option>)}
           </select>
         </label>
-        <div className="col-span-2 p-1 md:col-span-1 md:pl-2">
-          <Button type="submit" size="lg" variant="primary" full className="md:!w-auto md:px-6" icon={<Search className="h-4 w-4" />}>
+        <label className={cell}>
+          <span className={label}><Users className="h-3.5 w-3.5" /> People</span>
+          <select value={v.people} onChange={(e) => setV({ ...v, people: Number(e.target.value) })} className={classNames(input, 'cursor-pointer appearance-none')}>
+            <option value={0}>Any size</option>
+            {GROUP_SIZES.map((g) => <option key={g.value} value={g.value}>{g.label}</option>)}
+          </select>
+        </label>
+        <div className="col-span-2 p-1 lg:col-span-1 lg:pl-2">
+          <Button type="submit" size="lg" variant="primary" full className="lg:!w-auto lg:px-6" icon={<Search className="h-4 w-4" />}>
             Search
           </Button>
         </div>

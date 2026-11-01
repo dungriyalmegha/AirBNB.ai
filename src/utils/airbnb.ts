@@ -1,5 +1,8 @@
-/** Adds the guest's dates and guest count to an Airbnb listing link so it opens pre-filled. */
-export function airbnbLink(url: string, stay?: { checkIn?: string; checkOut?: string; adults?: number; children?: number }): string {
+/**
+ * Adds the guest's dates to an Airbnb listing link so it opens pre-filled.
+ * Group size isn't passed: party headcounts are above Airbnb's overnight-guest limit.
+ */
+export function airbnbLink(url: string, stay?: { checkIn?: string; checkOut?: string }): string {
   if (!url) return ''
   try {
     const u = new URL(url)
@@ -8,8 +11,6 @@ export function airbnbLink(url: string, stay?: { checkIn?: string; checkOut?: st
       u.searchParams.set('check_in', stay.checkIn)
       u.searchParams.set('check_out', stay.checkOut)
     }
-    if (stay.adults) u.searchParams.set('adults', String(stay.adults))
-    if (stay.children) u.searchParams.set('children', String(stay.children))
     return u.toString()
   } catch {
     return url

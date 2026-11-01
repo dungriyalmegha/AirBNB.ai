@@ -40,7 +40,7 @@ export function quoteStay(
   const total = accommodation + extraGuestTotal + cleaningFee
 
   const lines = [{ label: `Accommodation · ${n} night${n > 1 ? 's' : ''}`, amount: accommodation }]
-  if (extraGuestTotal > 0) lines.push({ label: `Extra guest fee · ${extraGuests} guest${extraGuests > 1 ? 's' : ''} × ${n} night${n > 1 ? 's' : ''}`, amount: extraGuestTotal })
+  if (extraGuestTotal > 0) lines.push({ label: `Extra people · ${extraGuests} × ${n} night${n > 1 ? 's' : ''}`, amount: extraGuestTotal })
   if (cleaningFee > 0) lines.push({ label: 'Cleaning fee', amount: cleaningFee })
 
   return { nights: n, nightly, accommodation, extraGuests, extraGuestTotal, cleaningFee, total, lines }
